@@ -8,6 +8,7 @@ export const meta = {
     { k: "veri", v: "math-500 · 50 soru", href: "https://huggingface.co/datasets/HuggingFaceH4/MATH-500" },
     { k: "ayar", v: "greedy · 4096 token" },
     { k: "donanım", v: "colab t4" },
+    { k: "kod", v: "github", href: "https://github.com/FurkanKY/modelin-icini-acmak" },
   ],
   series: "modelin içini açmak",
   seriesTotal: 5,
@@ -80,6 +81,6 @@ asıl merak ettiğim soru başka ama: model türkçe düşünürken de aynı iz 
 
 bu arada barış bayburt da geçen hafta [astra ile türkçe model kumru'nun ağırlıklarını düzenlemiş](https://blog.bayburt.lu/editing-kumru-weights) ve ilginç bir şey bulmuş: döngüleri bitirmek kumru'nun matematik skorunu hiç kıpırdatmamış. yani bazı modeller gerçekten bilmiyor. bu seride hangi model bilmiyor, hangisi sadece kararsız, onu ayırmaya çalışacağım.
 
-kodlar ve ham sonuçlar github'da olacak.
+kodlar ve ham sonuçlar [github'da](https://github.com/FurkanKY/modelin-icini-acmak).
 
 [^ayar]: mit'nin ayarları: düşünme modu açık, 32.768 token sınırı, temperature 0.6, her soruya 4 deneme ([deney notları](https://github.com/RikiyaT/lm_understand-logs/blob/main/exp8_math/README.md)). benimkiler: düşünme modu kapalı, 4096 token, greedy, 50 soru. ilk sayımda cevapları kaba bir eşleştirmeyle kontrol etmiştim ve 17 doğru bulmuştum. mit'nin kullandığı math-verify ile yeniden puanlayınca 20 çıktı, takılan cevaplarda doğru sayısı yine 0.
