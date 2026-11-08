@@ -1,0 +1,85 @@
+export const meta = {
+  title: "model biliyor ama karar veremiyor",
+  date: "2026-11-08",
+  summary: "mit'nin astra deneyini küçük ölçekte tekrarlamaya başladım. bu ilk yazıda qwen3.5-0.8b'ye 50 matematik sorusu sorup cevaplarına bakıyoruz.",
+  kind: "experiment",
+  facts: [
+    { k: "model", v: "qwen3.5-0.8b", href: "https://huggingface.co/Qwen/Qwen3.5-0.8B" },
+    { k: "veri", v: "math-500 · 50 soru", href: "https://huggingface.co/datasets/HuggingFaceH4/MATH-500" },
+    { k: "ayar", v: "greedy · 4096 token" },
+    { k: "donanım", v: "colab t4" },
+  ],
+  series: "modelin içini açmak",
+  seriesTotal: 5,
+  status: "devam ediyor",
+};
+
+geçen hafta mit'den [bir çalışma](https://rikiyat.github.io/blog/weight-space-programming/) çıktı. araştırmacılar gpt-6 astra'ya küçük bir modeli, [qwen3.5-0.8b](https://huggingface.co/Qwen/Qwen3.5-0.8B)'yi vermişler ve doğrudan "içini aç, bozuk yeri bul, düzelt" demişler. astra da ağırlıkların on binde birine falan dokunmuş ve modelin matematik skoru %7.9'dan %48.1'e çıkmış. ne bir eğitim var ne de bir veri, sadece birkaç ayarıyla oynanmış.
+
+ilk okuduğumda "vay be" dedim, sonra haberin paylaşıldığı x gönderisinin altındaki bir yorum gözüme takıldı. adam diyor ki bu kazanç modelin matematiği öğrenmesinden gelmiyor, model zaten biliyormuş, sadece takılıp aynı şeyi tekrarlamayı bırakmış gpt-6 astra'nın yaptığı değişiklikler sonrası.
+
+biraz kafamı kurcaladı açıkçası. bir model bir soruyu biliyor ama çözemiyor? bu tam olarak neye benziyor? astra'ya "bul ve düzelt" demek kolay ama hem o zaman neyi neden bulduğunu ben anlamamış oluyorum hem de yakından inceleyerek öğrenmeden geçmiş oluyorum, en azından benim için böyle durum. o yüzden işi ona bırakmak yerine colab üzerinde t4 gpu açıp aynı modelin içine kendim bakmaya karar verdim.
+
+## 50 soru
+
+modele [math-500](https://huggingface.co/datasets/HuggingFaceH4/MATH-500)'den ilk 50 soruyu verdim (math-500: yapay zeka modellerinin matematik sınavı gibi düşünebiliriz, berkeley'den araştırmacıların topladığı 12.500 yarışma sorusundan openai'ın seçtiği kolaydan olimpiyat seviyesine 500 soruluk bir test). iki kural koydum. birincisi, model zar atmayacak ve her adımda en olası kelimeyi seçecek. buna greedy decoding diyoruz. böylece model aynı soruya her seferinde aynı cevabı veriyor, deney tekrarlanabilir oluyor. ikincisi cevap için bir yer sınırı, önce 1536 token koydum, yani aşağı yukarı 1100 kelime.
+
+sonuçlar şöyle:
+
+| | |
+|---|---|
+| doğru | 20 / 50 (%40) |
+| cevabı bitiremeyen | 19 / 50 (%38) |
+| bitiremeyenlerden doğru olan | 0 |
+
+mit'nin %7.9'undan baya yüksek. sebebini sonradan buldum. mit modelin düşünme modunu açık tutmuş, ben kapalı tutmuşum. düşünme modunda model daha cevaba başlamadan kendi içinde döngüye giriyor ve cevapların %93'ü sınıra dayanıyor.[^ayar]
+
+asıl takıldığım şey ise ikinci satır oldu. ilk denemede 23 cevap hiç bitmemişti. "belki yer yetmedi" dedim ve sınırı 1536 token'dan 4096 token'a, yani aşağı yukarı 3000 kelimeye çıkarıp tekrar çalıştırdım. bir matematik sorusu çözümü için fazla bile ama burada token sınırının soru çözümüne etkisini de gözlemlemek istedim. bitirilemeyen soruların bitmemesinin sebebi token sınırı mı değil mi? sadece 4 tanesi bitirebildi, 19'u ise yine bitmedi ve bu 19 cevabın bir tanesi bile doğru değildi. 
+
+## takılmak neye benziyor
+
+burda takılmaktan kasıt modelin takılınca gidip aynı cümleyi kopyalayıp yapıştırmasından ziyade (bu sadece 4 cevapta oldu) bir yerde bir şüpheye düşmesi ve bir türlü o şüpheden çıkamaması aslında. geri kalan 15'inde bu şüpheden çıkamama sorununu yaşıyordu. 
+
+7\. soruda iki doğrunun arasındaki açıyı bulması gerekiyordu. bir yerde basit bir hesap hatası yapmış, -3/2 yerine -2/3 yazmış. sonuç tuhaf çıkınca bir şeylerin yanlış olduğunu fark etmiş, buraya kadar güzel ama hatayı hesabını kontrol ederek aramak yerine soruyu yeniden okuyarak aramaya başlamış:
+
+> Is it possible the equation is 6x = -y AND -y = -4z? Yes.
+>
+> Is it possible the equation is 6x = -y AND -y = -4z? Yes.
+>
+> Wait, maybe I copied the numbers wrong?
+
+soruyu doğru okumuştu, yanlış olan kendi hesabıydı ama oraya hiç dönmedi ve 3000 kelime boyunca soruyu tekrar tekrar okudu.
+
+## peki bu modelin içinde görünüyor mu
+
+dil modelini bir bina gibi düşünebiliriz. kelimeler katları sırayla çıkıyor, bu modelde 24 kat var. her katta modelin "o an kafasında ne olduğunu" gösteren 1024 sayılık bir liste oluşuyor. buna da aktivasyon diyoruz.
+
+merak ettiğim şey şuydu: model daha takılmadan cevabın ilk satırlarındayken kafasındaki sayılarda "bu iş uzayacak" diye bir iz var mı?
+
+takılan ve takılmayan cevapların ilk 512 token'ını aldım, her katta da iki grubun ortalamasını karşılaştırdım. iki ortalamanın farkı bize bir yön veriyor. sonra her cevaba sadece bu yöne bakarak "takılacak mı, takılmayacak mı" diye tahmin yürüttüm. kopya çekmemek için de tahmin ettiğim cevabı her seferinde hesaptan çıkardım.
+
+- hiçbir şeye bakmadan hep "takılmaz" demek: %62
+- sadece sorunun zorluğuna bakmak: %68
+- modelin 11. katındaki sayılara bakmak: **%78**
+
+iz binanın orta katlarında en güçlü. giriş katında neredeyse hiç yok.
+
+<Figure
+  src="/blog/model-bilmedigi-icin-degil-kararsiz-kaldigi-icin-kaybediyor/katman-dogruluk.svg"
+  alt="katman katman takılma tahmini doğruluğu: giriş katında %56, orta katlarda %78'e çıkıyor, şans seviyesi %62, sadece zorlukla tahmin %68"
+  caption="şekil 1 · her katta, cevabın ilk 512 token'ına bakarak takılacağını tahmin etme doğruluğu"
+/>
+
+burada dürüst olmam gereken bir nokta var. 50 örnekte %68 ile %78 arasındaki fark topu topu 5 soru. 25 kat içinden en iyisini seçince sonuç zaten biraz şişiyor. yani elimdeki şey henüz bir ipucu ama gece yarısı colab başında "tamam, buna devam ederim" dedirtecek kadar güçlü bir ipucu.
+
+## sırada ne var
+
+önce soru sayısını arttırıp (örneğin 200'e çıkarıp) bu izin gerçek olup olmadığına bakacağım ve ipucunun güçlü olup olmadığını test edeceğim. gerçekse o yönü modelin içinde kısıp modelin takılmayı bırakıp bırakmadığını göreceğim. kabaca mit'nin yaptığının elle yapılmış hali olacak.
+
+asıl merak ettiğim soru başka ama: model türkçe düşünürken de aynı iz çıkıyor mu?
+
+bu arada barış bayburt da geçen hafta [astra ile türkçe model kumru'nun ağırlıklarını düzenlemiş](https://blog.bayburt.lu/editing-kumru-weights) ve ilginç bir şey bulmuş: döngüleri bitirmek kumru'nun matematik skorunu hiç kıpırdatmamış. yani bazı modeller gerçekten bilmiyor. bu seride hangi model bilmiyor, hangisi sadece kararsız, onu ayırmaya çalışacağım.
+
+kodlar ve ham sonuçlar github'da olacak.
+
+[^ayar]: mit'nin ayarları: düşünme modu açık, 32.768 token sınırı, temperature 0.6, her soruya 4 deneme ([deney notları](https://github.com/RikiyaT/lm_understand-logs/blob/main/exp8_math/README.md)). benimkiler: düşünme modu kapalı, 4096 token, greedy, 50 soru. ilk sayımda cevapları kaba bir eşleştirmeyle kontrol etmiştim ve 17 doğru bulmuştum. mit'nin kullandığı math-verify ile yeniden puanlayınca 20 çıktı, takılan cevaplarda doğru sayısı yine 0.

@@ -1,0 +1,8 @@
+# aktivasyon dosyaları büyük, depoya girmiyor
+*.npy
+# kendi notlarım
+blog/STIL.md
+src/charts.py
+_preview.png
+__pycache__/
+.ipynb_checkpoints/
