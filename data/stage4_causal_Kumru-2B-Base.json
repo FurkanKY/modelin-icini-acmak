@@ -1,0 +1,158 @@
+{
+ "model": "vngrs-ai/Kumru-2B-Base",
+ "layers": [
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15
+ ],
+ "runs": [
+  {
+   "n": 45,
+   "p_hedef": 0.29137101277924055,
+   "dogru": 20,
+   "ara_ingilizce": 0.004292008508794728,
+   "pair": "fr-tr",
+   "silinen": "yok"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.2928168655312523,
+   "dogru": 20,
+   "ara_ingilizce": 0.004400006330757202,
+   "pair": "fr-tr",
+   "silinen": "en"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.242665618391119,
+   "dogru": 18,
+   "ara_ingilizce": 0.0068710694283355325,
+   "pair": "fr-tr",
+   "silinen": "tr"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.28103048626411087,
+   "dogru": 20,
+   "ara_ingilizce": 0.004704165672410454,
+   "pair": "fr-tr",
+   "silinen": "fr"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.2827879004612138,
+   "dogru": 20,
+   "ara_ingilizce": 0.004652619972997248,
+   "pair": "fr-tr",
+   "silinen": "de"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.29240438223043586,
+   "dogru": 20,
+   "ara_ingilizce": 0.004082855637251567,
+   "pair": "fr-tr",
+   "silinen": "rastgele"
+  },
+  {
+   "n": 52,
+   "p_hedef": 0.33648425900586376,
+   "dogru": 25,
+   "ara_ingilizce": 0.021409454906496157,
+   "pair": "de-tr",
+   "silinen": "yok"
+  },
+  {
+   "n": 52,
+   "p_hedef": 0.3505196775253213,
+   "dogru": 24,
+   "ara_ingilizce": 0.02191240666934391,
+   "pair": "de-tr",
+   "silinen": "en"
+  },
+  {
+   "n": 52,
+   "p_hedef": 0.2789598064801584,
+   "dogru": 22,
+   "ara_ingilizce": 0.022510811764032742,
+   "pair": "de-tr",
+   "silinen": "tr"
+  },
+  {
+   "n": 52,
+   "p_hedef": 0.3179706079778183,
+   "dogru": 24,
+   "ara_ingilizce": 0.02193589553341833,
+   "pair": "de-tr",
+   "silinen": "fr"
+  },
+  {
+   "n": 52,
+   "p_hedef": 0.3446827954514727,
+   "dogru": 25,
+   "ara_ingilizce": 0.022111003236449715,
+   "pair": "de-tr",
+   "silinen": "de"
+  },
+  {
+   "n": 52,
+   "p_hedef": 0.3391972426367059,
+   "dogru": 25,
+   "ara_ingilizce": 0.02125904168390382,
+   "pair": "de-tr",
+   "silinen": "rastgele"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.10926827704436921,
+   "dogru": 11,
+   "ara_ingilizce": 0.10042092365733374,
+   "pair": "tr-fr",
+   "silinen": "yok"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.07953868502324137,
+   "dogru": 5,
+   "ara_ingilizce": 0.31690797018301153,
+   "pair": "tr-fr",
+   "silinen": "en"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.040383035410842344,
+   "dogru": 9,
+   "ara_ingilizce": 0.026719257838138017,
+   "pair": "tr-fr",
+   "silinen": "tr"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.022314273809509663,
+   "dogru": 2,
+   "ara_ingilizce": 0.2775732474246373,
+   "pair": "tr-fr",
+   "silinen": "fr"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.11089364534547914,
+   "dogru": 12,
+   "ara_ingilizce": 0.12351092523830529,
+   "pair": "tr-fr",
+   "silinen": "de"
+  },
+  {
+   "n": 45,
+   "p_hedef": 0.1079871998317281,
+   "dogru": 10,
+   "ara_ingilizce": 0.09984698376469572,
+   "pair": "tr-fr",
+   "silinen": "rastgele"
+  }
+ ]
+}
