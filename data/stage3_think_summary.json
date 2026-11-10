@@ -1,0 +1,51 @@
+{
+ "think_base": {
+  "n": 100,
+  "dogru": 10,
+  "takilan": 100,
+  "takilip_dogru": 10,
+  "ort_token": 4096
+ },
+ "think_steer03": {
+  "n": 100,
+  "dogru": 11,
+  "takilan": 99,
+  "takilip_dogru": 10,
+  "ort_token": 4063
+ },
+ "think_rep_a15": {
+  "n": 100,
+  "dogru": 11,
+  "takilan": 99,
+  "takilip_dogru": 10,
+  "ort_token": 4070
+ },
+ "base_v2": {
+  "n": 100,
+  "dogru": 41,
+  "takilan": 33,
+  "takilip_dogru": 1,
+  "ort_token": 1945
+ },
+ "rep_a10": {
+  "n": 100,
+  "dogru": 38,
+  "takilan": 33,
+  "takilip_dogru": 2,
+  "ort_token": 1966
+ },
+ "rep_a15": {
+  "n": 100,
+  "dogru": 36,
+  "takilan": 35,
+  "takilip_dogru": 1,
+  "ort_token": 1912
+ },
+ "rep_p50c": {
+  "n": 100,
+  "dogru": 39,
+  "takilan": 30,
+  "takilip_dogru": 0,
+  "ort_token": 1948
+ }
+}

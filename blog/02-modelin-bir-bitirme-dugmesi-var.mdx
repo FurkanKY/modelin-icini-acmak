@@ -1,0 +1,110 @@
+export const meta = {
+  title: "modelin bir bitirme düğmesi var",
+  date: "2026-11-10",
+  summary: "200 soruda modelin takılacağını cevabın ilk paragrafından tahmin edebildim. o yönü modelin içinde itince takılma azaldı ama doğru cevap sayısı artmadı.",
+  kind: "experiment",
+  facts: [
+    { k: "model", v: "qwen3.5-0.8b", href: "https://huggingface.co/Qwen/Qwen3.5-0.8B" },
+    { k: "veri", v: "math-500 · 300 soru", href: "https://huggingface.co/datasets/HuggingFaceH4/MATH-500" },
+    { k: "ayar", v: "greedy · 4096 token" },
+    { k: "donanım", v: "colab t4" },
+    { k: "kod", v: "github", href: "https://github.com/FurkanKY/modelin-icini-acmak" },
+  ],
+  series: "modelin içini açmak",
+  seriesTotal: 5,
+  status: "devam ediyor",
+  draft: true,
+};
+
+[ilk yazıda](/tr/yazilar/model-bilmedigi-icin-degil-kararsiz-kaldigi-icin-kaybediyor/) 50 soruya bakmıştım. modelin 11. katındaki sayılara bakarak bir cevabın takılıp takılmayacağını %78 doğrulukla tahmin edebiliyordum. 50 soruda bu fark topu topu 5 soru ediyordu, o yüzden buna bir ipucu demiştim.
+
+bu yazıda iki şey yaptım. önce soru sayısını 200'e çıkarıp ipucunun gerçek olup olmadığına baktım. sonra o yönü modelin içinde kısıp açtım ve modelin davranışı değişiyor mu, onu ölçtüm.
+
+## 200 soru
+
+ayarlar aynı. greedy decoding, düşünme modu kapalı, 4096 token sınırı.[^surum]
+
+| | |
+|---|---|
+| doğru | 91 / 200 (%45.5) |
+| cevabı bitiremeyen | 72 / 200 (%36) |
+| birebir aynı metni tekrarlayan | 16 / 72 |
+
+takılan cevapların çoğunda model yine bir şüpheye düşüyor ve aynı şüphenin etrafında farklı cümlelerle dönüyor.
+
+en sevdiğim örnek 5. soru oldu. bir altıgen altı eşkenar üçgene bölünüyor, üçgenin çevresi 21 inç, altıgenin çevresi soruluyor. cevap 42. model önce 84 buluyor, sonra 42'ye geçiyor, sonra yine 84'e dönüyor. 435. kelime civarında 42'de karar kılıyor ve sonraki 2000 kelime boyunca 42'yi kontrol etmeye devam ediyor. en son şunu yazdığı anda yeri bitiyor:
+
+> Perimeter of hexagon = $6 \times 7 = 42$.
+>
+> Final check.
+
+cevap metnin içinde duruyor ama model "bitti" demiyor. 200 cevapta böyle 3 tane var.
+
+## ipucu gerçek mi
+
+ilk yazıdaki yöntemin aynısını 200 cevaba uyguladım. her cevabın ilk 512 token'ını aldım, her katta takılanların ortalamasından bitenlerin ortalamasını çıkardım ve tahmin ettiğim cevabı her seferinde hesabın dışında bıraktım.
+
+- hiçbir şeye bakmadan hep "takılmaz" demek: %64
+- sadece sorunun zorluğuna bakmak: %68
+- 15. kattaki sayılara bakmak: **%79.5**
+
+5. ile 20. kat arasındaki her kat %76 ile %80 arasında, yani tek bir şanslı kat yok. mit'nin en iyi düzenlemesi de 15. ve 19. kattaymış.
+
+ilk yazıda 25 kat içinden en iyisini seçince sonucun şiştiğini söylemiştim. bunu kontrol etmek için pilotta seçtiğim 11. katı modelin daha önce hiç görmediği 150 soruda denedim. %75 çıktı, şans %64. ipucu biraz zayıfladı ama yerinde duruyor.
+
+asıl merak ettiğim şey bu yönün sadece "soru zor" deyip demediğiydi. zor sorularda model zaten daha çok takılıyor. ikisi arasındaki korelasyon 0.54, yani ilişkili ama aynı şey değiller. aynı 200 soruda yönün doğru bilip zorluğun yanıldığı 44 soru var, tersi 21.[^test] aynı zorluk seviyesindeki sorulara tek tek bakınca da yön şansın üstünde kalıyor. en zor seviyede şans %58 iken yön %84 tahmin ediyor. 4. seviyede ise hiçbir işe yaramıyor, sebebini hâlâ bilmiyorum.
+
+200 cevabı bu yöndeki skorlarına göre sıralayıp 40'arlık beş gruba böldüm. skoru en düşük grupta 40 cevaptan 1'i takılıyor, en yüksek grupta 36'sı.
+
+<Figure
+  src="/blog/modelin-bir-bitirme-dugmesi-var/skor-gruplari.svg"
+  alt="200 cevap yön skoruna göre 40'arlık beş gruba bölündü. takılan cevap sayısı en düşük skordan en yükseğe 1, 4, 9, 22, 36"
+  caption="şekil 1 · cevabın ilk 512 token'ındaki skora göre gruplar ve her gruptaki takılan cevap sayısı"
+/>
+
+## düğmeyi çevirmek
+
+buraya kadar elimdeki şey bir tahmin. ateş hastalığı haber verir ama ateşi düşürmek hastalığı geçirmez. bu yönün takılmaya sahiden sebep olup olmadığını anlamanın yolu onu modelin içinde değiştirip ne olduğuna bakmak.
+
+yönü 0-199. sorulardan bulmuştum. denemeleri modelin hiç görmediği 200-299. sorularda yaptım ve dört şey denedim:
+
+- **silmek:** modelin bu yöne yazan ağırlıklarından o payı çıkardım, yani model bu yönde artık hiçbir şey söyleyemiyor
+- **ters çevirmek:** aynı işlemi 1.5 katıyla yaptım, mit de bu katsayıyı kullanmış
+- **hafif itmek:** ağırlıklara dokunmadan 15. katın çıkışını her token'da biraz "biten" tarafa kaydırdım
+- **güçlü itmek:** aynısını iki kat kuvvetle yaptım
+
+| deneme | takılan | doğru | ort. token |
+|---|---|---|---|
+| düzenlenmemiş | 34 | 41 | 2013 |
+| sil | 72 | 28 | 3211 |
+| ters çevir | **93** | 25 | 3844 |
+| hafif it | 25 | 39 | 1686 |
+| güçlü it | **21** | 30 | 1577 |
+
+yön silinince takılan cevap 34'ten 72'ye çıkıyor, ters çevrilince 100 cevabın 93'ü bitmiyor. öbür tarafa itince 21'e iniyor. yani model bitirip bitirmeyeceğine karar verirken bu yönü gerçekten kullanıyor.
+
+ters çevrilmiş modelin cevapları ilginç. 18 cevapta model doğru sayıyı yazıyor ama bir türlü bitiremiyor. ilk yazıdaki "model biliyor ama karar veremiyor" cümlesinin elle üretilmiş hali gibi.
+
+## doğru cevap ise artmadı
+
+beklediğim şey itince takılan cevapların bitmesi ve bir kısmının doğru çıkmasıydı. takılan cevaplar gerçekten bitti. hafif itmede 16 cevap takılmaktan kurtuldu ve bunların 8'i doğru bitti. aynı anda başka 15 doğru cevap yanlışa döndü, 13 yanlış cevap da doğruya. sonuçta toplam neredeyse hiç değişmedi. güçlü itmede durum daha kötü. 19 cevap kurtuldu, 5'i doğru bitti ve doğru sayısı 41'den 30'a düştü.
+
+aslında bu mantıklı. modeli bitirmeye zorlayınca kararsız kaldığı cevabı da yazıp geçiyor. bazen kararsızlığında haklı, cevap gerçekten yanlış. düğme modele "bitir" diyor ama ona doğru cevabın ne olduğunu söylemiyor.
+
+bu sonuç ilk yazının başlığını da biraz düzeltiyor. "model biliyor ama karar veremiyor" demiştim. 200 soruda bunun sadece bir kısmı doğru çıktı. bazı cevaplarda model gerçekten biliyor ve bitiremiyor, altıgen sorusu gibi. çoğunda ise kararsızlık bir işaret. model emin olmadığı için dönüyor ve çoğu zaman emin olmamakta haklı.
+
+barış bayburt da [kumru'da](https://blog.bayburt.lu/editing-kumru-weights) benzer bir yere varmıştı. astra kumru'nun döngülerini kaldırmış ama türkçe matematik skoru yerinden oynamamış. o başka bir model ve başka bir yöntem kullandı, ben elle tek bir yönü ittim. ikimiz de aynı yere çıktık. döngüyü kırmak tek başına doğru cevap getirmiyor.
+
+## peki mit nasıl %48'e çıktı
+
+açıkçası henüz bilmiyorum. iki şüphem var.
+
+birincisi benim bulduğum yön mit'ninkiyle aynı olmayabilir. ben "takılacak mı" sorusuna bakan bir yön buldum, mit ise modelin kendini tekrar ettiği anlara bakmış olabilir. bunun için ayrı bir yön çıkarıp onu da denedim, sonucunu bir sonraki yazıda anlatacağım.
+
+ikincisi düşünme modu. mit modeli düşünme modu açık çalıştırmış ve cevapların %93'ü sınıra dayanıyormuş. benim ayarlarımda bu oran %34. o kadar takılan bir modelde döngüyü kırmak büyük kazanç getirebilir. bende ise zaten bitirebilen bir modeli daha çabuk bitirmeye itmiş oluyorum.
+
+kodlar ve ham cevaplar [github'da](https://github.com/FurkanKY/modelin-icini-acmak).
+
+[^surum]: ilk 50 soru bu sefer 18 takılan ve 23 doğru çıktı, ilk yazıda 19 ve 20'ydi. arada colab'daki transformers sürümü değişmişti. greedy decoding'de bile kütüphane sürümü bu kadar fark yaratabiliyor.
+
+[^test]: iki yönlü binom testinde p ≈ 0.006. itme denemelerinde "takıldı→bitti" ile "bitti→takıldı" sayılarına aynı testi uyguladım. hafif itmede 16'ya 7 (p ≈ 0.09), güçlü itmede 19'a 6 (p ≈ 0.015). 100 soru bu boyuttaki etkileri ayırmak için az, o yüzden bu sayıları şimdilik yön gösterici olarak okuyorum.

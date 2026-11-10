@@ -60,6 +60,19 @@ yön 0-199. sorulardan bulundu, deneme modelin hiç görmediği 200-299. sorular
 - ayrışma en net 11. katmanda, orta katlar yine en güçlü bölge.
 - 15. katmanda bu yön ile bitirme yönü arasındaki kosinüs benzerliği 0.14, neredeyse dik. iki ayrı şey.
 
+yeniden çalıştırma (10 kasım, `src/stage3_think.py`, hepsi aynı oturumda, taban dahil). ham cevaplar `data/stage3_base_v2.json`, `data/stage3_rep_*.json`.
+
+| deneme | ne yaptım | takılan | doğru | ort. token | takıldı→bitti | bitti→takıldı |
+|---|---|---|---|---|---|---|
+| düzenlenmemiş (v2) | | 33 | 41 | 1945 | | |
+| tekrar, α = 1 | 8-22. katmanlar, W − u(uᵀW) | 33 | 38 | 1966 | 13 | 13 |
+| tekrar, α = 1.5 | 8-22. katmanlar, mit p10c'nin karşılığı | 35 | 36 | 1912 | 12 | 14 |
+| tekrar, 64 sütun | 15. ve 19. katman mlp'si, en çok yazan 64 sütun, α = 1.5 (mit p50c) | 30 | 39 | 1948 | 8 | 5 |
+
+tekrar yönü birebir aynı çıktı (126.111 / 185.213 token, bitirme yönüyle kosinüs 0.143).
+
+ilk çalıştırma (8 kasım, ham cevapları kayıp):
+
 | deneme | ne yaptım | takılan | doğru | ort. token | takıldı→bitti | bitti→takıldı |
 |---|---|---|---|---|---|---|
 | düzenlenmemiş | | 34 | 41 | 2013 | | |
@@ -71,7 +84,25 @@ tekrar yönü modeli bozmuyor ama takılmayı da anlamlı biçimde azaltmıyor. 
 
 bu üç deneme colab oturumu sıfırlandıktan sonra, kütüphaneler yeniden kurularak çalıştı. düzenlenmemiş taban önceki oturumdan. aradaki teknik farklar küçük sapmalara yol açmış olabilir.
 
-bu üç denemenin ham cevapları ben indiremeden colab oturumu bir kez daha sıfırlanınca kayboldu. denemeleri yeniden çalıştırıp `data/` klasörüne ekleyeceğim. sayılar biraz değişirse bu tabloyu da güncelleyeceğim.
+bu üç denemenin ham cevapları ben indiremeden colab oturumu bir kez daha sıfırlanınca kayboldu. yukarıdaki yeniden çalıştırma bunların yerini alıyor. sayılar birkaç soru oynadı, en büyük fark α = 1.5'te (takılan 41 yerine 35). sonuç aynı.
+
+### düşünme modu açık
+
+mit düşünme modunu açık tutmuştu. aynı 100 soruyu (200-299) `enable_thinking=True` ile sordum, gerisi aynı (greedy, 4096 token).
+"birebir döngü": 200 kelimelik bir pencerenin en az %90'ı daha önce geçmiş 8 kelimelik parçalardan oluşuyor (`src/stage3_think_analiz.py`).
+ham cevaplar `data/stage3_think_*.json`.
+
+| deneme | doğru | sınıra dayanan | birebir döngü | döngü başlangıcı (medyan kelime) |
+|---|---|---|---|---|
+| düşünme kapalı (base_v2) | 41 | 33 | 12 | 718 |
+| düşünme açık | 10 | 100 | 95 | 524 |
+| düşünme açık, bitirme yönüne −0.3·u | 11 | 99 | 91 | 574 |
+| düşünme açık, tekrar yönü α = 1.5 | 11 | 99 | 95 | 361 |
+
+- düşünme modunda 100 cevabın 100'ü sınıra dayanıyor, 95'i birebir döngüde. mit'nin %93'ü büyük ihtimalle bu.
+- 10 doğru cevabın hepsi bitmeyen cevaplarda. model cevabı buluyor, sonra aynı kontrol satırlarını tekrar ediyor (ilk soruda 40'ı buluyor).
+- düşünme bloğu 4096 token'da hiçbir cevapta kapanmıyor. mit 32.768 token kullandı. birebir döngüye giren bir cevabın greedy'de daha uzun sınırla kurtulması pek olası değil ama bunu test etmedim.
+- iki yön de düşünme modundaki döngüyü kırmıyor. tekrar yönünü silmek döngüyü daha erken başlatıyor. yönler düşünme kapalı cevaplardan bulundu, düşünme bloğundaki durumu yakalamıyor olabilirler.
 
 ## ne çıkardım
 
@@ -80,9 +111,11 @@ bu üç denemenin ham cevapları ben indiremeden colab oturumu bir kez daha sıf
 3. takılan cevapların bir kısmında model cevabı biliyor ama bitiremiyor.
 4. bitirmeye itmek doğruluğu artırmıyor. model kararsız kaldığı cevabı yanlış bitirebiliyor ve itme iyi giden cevapları da bozuyor.
 5. tekrar yönü ayrı bir şey. mit'nin yöntemini onunla tekrarlayınca model bozulmuyor ama düzelmiyor da.
+6. mit ile benim aramdaki fark düşünme modundan geliyor. düşünme açıkken model neredeyse her soruda birebir döngüye giriyor. mit'nin kazancı büyük ihtimalle bu döngüyü kırmaktan geliyor ve benim iki yönüm bunu yapamıyor.
 
 ## açık sorular
 
-- mit düşünme modunu açık tuttu ve cevapların %93'ü takılıyordu. bizde %34. döngünün türü farklı olabilir. aynı denemeyi düşünme modu açık yapmak en doğrudan test.
+- tekrar yönünü düşünme modu açık cevaplardan çıkarmak. döngü düşünme bloğunun içinde oluyor, yön de oradan bulunmalı.
+- 32.768 token sınırıyla düşünme modunda kaç cevabın gerçekten bittiği (t4'te 100 soru için çok uzun).
 - mit yönü nasıl bulduğunu yayınlamadı. bizim tekrar yönümüz onunkiyle aynı olmayabilir.
 - 100 soru, bu boyuttaki etkileri ayırmak için az.
