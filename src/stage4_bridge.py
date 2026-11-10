@@ -13,6 +13,8 @@ burada üç yoldan bakıyorum.
    kendi vektörünü de siliyorum (olumlu kontrol). bu zarar vermiyorsa yöntem hiçbir şey ölçmüyor demektir.
    ingilizce vektör hedef kelimeye biraz benzeyebilir (fransızca ile ortak kökler). o yüzden "_dik" sürümünde
    ingilizce ve almanca vektörden önce hedef kelimenin vektörlerini çıkarıyorum, kalan kısmı siliyorum.
+   "en_baska" ilgisiz başka bir kavramın ingilizcesi (aynı şekilde hedeften arındırılmış). herhangi bir ingilizce
+   kelimeyi silmek zarar veriyor mu, yoksa sadece o kavramın ingilizcesini silmek mi?
 3. tuned lens ile ara katlarda ingilizce ve almanca yan yana. almanca görevle ilgisiz, taban çizgisi o.
 
 stage4_latent.py ile aynı klasörde çalışıyor.
@@ -103,8 +105,8 @@ def main():
     res["kelime"] = {}
     for pair in (a.pairs.split(",") if "kelime" in parts else []):
         src, tgt = pair.split("-")
-        stats = {w: {"p": 0.0, "dogru": 0} for w in ("yok", "en", "de", "hedef", "en_dik", "de_dik")}
-        n, cos_t = 0, {"en": 0.0, "de": 0.0, "hedef": 1.0, "en_dik": 0.0, "de_dik": 0.0}
+        stats = {w: {"p": 0.0, "dogru": 0} for w in ("yok", "en", "de", "hedef", "en_dik", "de_dik", "en_baska")}
+        n, cos_t = 0, {"en": 0.0, "de": 0.0, "hedef": 1.0, "en_dik": 0.0, "de_dik": 0.0, "en_baska": 0.0}
         for i, w in enumerate(WORDS):
             S = {l: start_tokens(tok, vocab_str, w[COL[l]]) for l in {src, tgt, "en", "de"}}
             if any(S[x] & S[y] for x in S for y in S if x < y):
@@ -112,10 +114,12 @@ def main():
             enc = tok(build_prompt(src, tgt, i), return_tensors="pt").to(a.device)
             tgt_v = Wg[first_ids(tok, w[COL[tgt]])].mean(0)
             T = Wg[first_ids(tok, w[COL[tgt]])].T
-            for what in ("yok", "en", "de", "hedef", "en_dik", "de_dik"):
+            other = WORDS[(i + len(WORDS) // 2) % len(WORDS)][COL["en"]]  # ilgisiz bir kavram
+            for what in ("yok", "en", "de", "hedef", "en_dik", "de_dik", "en_baska"):
                 hooks = []
-                if what.endswith("_dik"):
-                    Q, _ = torch.linalg.qr(torch.cat([T, Wg[first_ids(tok, w[COL[what[:2]]])].T], 1))
+                if what.endswith("_dik") or what == "en_baska":
+                    word = other if what == "en_baska" else w[COL[what[:2]]]
+                    Q, _ = torch.linalg.qr(torch.cat([T, Wg[first_ids(tok, word)].T], 1))
                     V = Q[:, T.shape[1]:]  # hedefin kapsadığı alan çıkmış hali
                 elif what != "yok":
                     V, _ = torch.linalg.qr(Wg[first_ids(tok, w[COL[tgt if what == "hedef" else what]])].T)
