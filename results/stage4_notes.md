@@ -161,6 +161,10 @@ türkçe henüz ortaya çıkmamış, 30. katmandan sonra geliyor.
 
 bu, bütün aşamada ilk olumlu müdahale sonucu. 0.8b'de ve kumru'da aynı test hiçbir şey göstermedi.
 
+bir şüphe kaldı. ingilizce kelime çoğu zaman kaynak kelimeye benziyor (almanca "haus" ile "house"). ingilizce vektörü
+silerken kaynak kelimenin bilgisini de silmiş olabilirim. bunu ayırmak için kaynak kelimeyi silmeyi ve ingilizce
+vektörden kaynağın payını da çıkarmayı deneyeceğim. o test bitene kadar bu sonucu kesin saymıyorum.
+
 ## ne çıkardım
 
 1. qwen'in ara katları ingilizce kelimelere yakın, kumru'nunkiler türkçeye.
@@ -169,7 +173,8 @@ bu, bütün aşamada ilk olumlu müdahale sonucu. 0.8b'de ve kumru'da aynı test
    o yüzden ortadaki kavram ingilizce kelimelere yakın okunuyor. aynı etki kumru'da türkçe için var.
 3. büyük qwen'de (4b) tablo değişiyor. ingilizce tuned lens'te de hedefin iki katı ve o kavramın ingilizce kelimesini
    ara katlardan silmek türkçe çeviriyi bozuyor. almancayı ya da ilgisiz bir ingilizce kelimeyi silmek bozmuyor.
-   yani 4b türkçeye çevirirken ara katlarda kavramı ingilizce kelimeye yakın bir biçimde tutuyor ve bunu kullanıyor.
+   yani 4b türkçeye çevirirken ara katlarda kavramı ingilizce kelimeye yakın bir biçimde tutuyor ve büyük ihtimalle
+   bunu kullanıyor. kaynak kelime kontrolü henüz yapılmadı (bkz. 6. bölüm).
 4. bu bir ingilizce cümle planı gibi görünmüyor. "evlerimizden" üretirken ara katlarda "house" var, "from" yok.
    ingilizce kavramın adı olarak duruyor, kelime sırası türkçenin.
 5. kumru fransızcaya giderken ara katlarda ingilizce görünüyor ama silmek bir şey değiştirmiyor. köprü değil.
