@@ -159,22 +159,59 @@ fazla. almancayı ya da ilgisiz bir ingilizce kelimeyi silmek hiçbir şey yapm�
 çıkarınca da etki büyük ölçüde kalıyor (77'den 67'ye). türkçenin kendisini silmek daha az etkili çünkü bu katmanlarda
 türkçe henüz ortaya çıkmamış, 30. katmandan sonra geliyor.
 
-bu, bütün aşamada ilk olumlu müdahale sonucu. 0.8b'de ve kumru'da aynı test hiçbir şey göstermedi.
+bu, bütün aşamada ilk olumlu müdahale sonucu. kumru'da aynı test hiçbir şey göstermedi, 0.8b'de ise etki ölçülemeyecek kadar küçüktü.
 
-bir şüphe kaldı. ingilizce kelime çoğu zaman kaynak kelimeye benziyor (almanca "haus" ile "house"). ingilizce vektörü
-silerken kaynak kelimenin bilgisini de silmiş olabilirim. bunu ayırmak için kaynak kelimeyi silmeyi ve ingilizce
-vektörden kaynağın payını da çıkarmayı deneyeceğim. o test bitene kadar bu sonucu kesin saymıyorum.
+**kaynak kelime kontrolü.** bir şüphe vardı. ingilizce kelime çoğu zaman kaynak kelimeye benziyor (almanca "haus" ile
+"house"). ingilizce vektörü silerken kaynak kelimenin bilgisini de silmiş olabilirdim. bunu ayrı bir çalıştırmayla
+test ettim (kod `src/stage4_source.py`, sonuç `data/stage4_source_Qwen3.5-4B.json`). bu sefer her kelimenin sonucunu
+ayrı kaydettim, böylece farkın şans eseri olup olmadığına da bakabildim. kontrol dili fr→tr'de almanca, de→tr'de
+fransızca. ikinci yönde fransızcanın da eklenmesiyle bazı kelimeler elendi, o yüzden de→tr'de 93 kelime var ve
+sayılar yukarıdaki tabloyla doğrudan karşılaştırılamaz.
+
+| silinen | fr→tr doğru | p düşüşü [%95 aralık] | de→tr doğru | p düşüşü [%95 aralık] |
+|---|---|---|---|---|
+| hiçbiri | 77/93 | | 80/93 | |
+| türkçe hedef | 65 | 0.110 [0.081, 0.141] | 72 | 0.116 [0.086, 0.148] |
+| kaynak kelime | 75 | 0.030 [0.014, 0.049] | 80 | 0.037 [0.019, 0.061] |
+| ingilizce | 64 | 0.230 [0.185, 0.277] | 65 | 0.217 [0.172, 0.265] |
+| ingilizce, hedef ve kaynaktan arındırılmış | 70 | 0.117 [0.082, 0.153] | 73 | 0.092 [0.056, 0.129] |
+| kontrol dili, arındırılmış | 76 | 0.017 [0.007, 0.028] | 80 | 0.000 [-0.008, 0.008] |
+| ilgisiz ingilizce, arındırılmış | 76 | -0.001 [-0.003, 0.001] | 81 | -0.001 [-0.004, 0.002] |
+
+"p düşüşü" doğru cevaba verilen olasılığın ne kadar azaldığı. aralık, kelimeleri yeniden örnekleyerek (bootstrap)
+bulunan %95 güven aralığı.
+
+- kaynak kelimeyi silmek çok az zarar veriyor (0.03). model kaynak kelimeyi bu yönde pek tutmuyor.
+- ingilizce vektörün %93-95'i hedefin ve kaynağın dışında kalıyor. o pay silindiğinde de olasılık 0.09-0.12 düşüyor.
+  kontrollerde düşüş 0.02'nin altında. aralıklar birbirinden tamamen ayrı.
+- kelimeleri kaynak ile ingilizcesinin yazılışı benziyor mu diye ikiye ayırdım (`src/stage4_source_analiz.py`).
+  fr→tr'de benzemeyen 83 kelimede (livre/book, chien/dog) arındırılmış ingilizceyi silmek olasılığı 0.112 düşürüyor.
+  de→tr'de benzemeyen 57 kelimede (buch/book, hund/dog) 0.120. benzer kelimelerde (haus/house) etki daha küçük
+  (de→tr 0.047). yani etki ingilizcenin kaynağa benzemesinden gelmiyor. benzemeyen kelimelerde de tam gücüyle var.
+- doğru cevap sayısında fark daha küçük (77'den 70'e, 80'den 73'e) ve mcnemar testinde sınırda (p 0.04 ile 0.15
+  arası). olasılıktaki düşüş net, en üstteki cevabın değişmesi ise birkaç kelimede oluyor.
+
+sonuç olarak kaynak şüphesi düştü. 4b'de o kavramın ingilizce kelimesinin çıkış yönü, türkçe çeviri için gerekli.
+aynı kavramın almancası ya da ilgisiz bir ingilizce kelime bu işi görmüyor.
+
+bunun tam olarak ne demek olduğunu da sınırlamak lazım. bu test ara katlardaki kavramın ingilizce kelimeye hizalı
+bir yönde durduğunu ve modelin o yönü kullandığını gösteriyor. "model kafasında ingilizce cümle kuruyor" demiyor
+(ekli kelimelerde "from" hiç görünmedi). "kavram dilden bağımsız ama ingilizceye en yakın görünüyor" ile "kavram
+ingilizce" arasındaki farkı da tam ayıramıyor. aynı kavramın almancasının işe yaramaması ingilizceye özgü bir şey
+olduğunu düşündürüyor.
 
 ## ne çıkardım
 
 1. qwen'in ara katları ingilizce kelimelere yakın, kumru'nunkiler türkçeye.
 2. küçük qwen'de (0.8b) bu ingilizce büyük ölçüde mercekten geliyor. tuned lens ile ingilizce ve türkçe başa baş,
-   müdahale testlerinin hiçbiri ingilizcenin kullanıldığını göstermedi. qwen'in çıkış katmanı ingilizce ağırlıklı,
+   müdahale testleri ingilizcenin kullanıldığını göstermedi. ama 0.8b çeviride zayıf (93 kelimenin 15'i), o yüzden
+   testin küçük bir etkiyi yakalayacak gücü yoktu. arındırılmış ingilizceyi silmek olasılığı 0.071'den 0.050'ye
+   düşürdü, almanca 0.066. yani "yok" yerine "ölçülemeyecek kadar küçük" demek daha doğru. qwen'in çıkış katmanı ingilizce ağırlıklı,
    o yüzden ortadaki kavram ingilizce kelimelere yakın okunuyor. aynı etki kumru'da türkçe için var.
 3. büyük qwen'de (4b) tablo değişiyor. ingilizce tuned lens'te de hedefin iki katı ve o kavramın ingilizce kelimesini
    ara katlardan silmek türkçe çeviriyi bozuyor. almancayı ya da ilgisiz bir ingilizce kelimeyi silmek bozmuyor.
-   yani 4b türkçeye çevirirken ara katlarda kavramı ingilizce kelimeye yakın bir biçimde tutuyor ve büyük ihtimalle
-   bunu kullanıyor. kaynak kelime kontrolü henüz yapılmadı (bkz. 6. bölüm).
+   kaynak kelime kontrolü ve benzemeyen kelimeler (chien/dog) de bunu destekliyor. 4b türkçeye çevirirken ara katlarda
+   kavramı ingilizce kelimeye hizalı bir yönde tutuyor ve bu yönü kullanıyor.
 4. bu bir ingilizce cümle planı gibi görünmüyor. "evlerimizden" üretirken ara katlarda "house" var, "from" yok.
    ingilizce kavramın adı olarak duruyor, kelime sırası türkçenin.
 5. kumru fransızcaya giderken ara katlarda ingilizce görünüyor ama silmek bir şey değiştirmiyor. köprü değil.
