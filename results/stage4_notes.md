@@ -200,18 +200,55 @@ bir yönde durduğunu ve modelin o yönü kullandığını gösteriyor. "model k
 ingilizce" arasındaki farkı da tam ayıramıyor. aynı kavramın almancasının işe yaramaması ingilizceye özgü bir şey
 olduğunu düşündürüyor.
 
+## 7. aradaki boyut: qwen3.5-2b ve üç boyut yan yana
+
+0.8b ile 4b arasındaki fark büyüklükten mi geliyor diye qwen3.5-2b'yi aynı testlerden geçirdim (float16). kaynak kelime
+kontrolünü 0.8b için de tekrarladım, böylece üç boyut aynı 93 kelimede aynı ölçülerle karşılaştırılabiliyor.
+tabloyu `src/stage4_boyut.py` üretiyor.
+
+| model | yön | doğru (silmeden) | görünen ingilizce, logit / tuned | arındırılmış ingilizceyi silince p düşüşü | başlangıca oranı | kontrol dili | ilgisiz ingilizce |
+|---|---|---|---|---|---|---|---|
+| 0.8b | fr→tr | 15/93 | 0.075 / 0.067 | 0.013 [0.004, 0.025] | %18 | %2 | %1 |
+| 0.8b | de→tr | 17/93 | 0.098 / 0.075 | 0.011 [0.001, 0.024] | %16 | %2 | %1 |
+| 2b | fr→tr | 49/93 | 0.229 / 0.118 | 0.075 [0.052, 0.102] | %24 | %8 | %0 |
+| 2b | de→tr | 51/93 | 0.251 / 0.107 | 0.069 [0.048, 0.091] | %22 | %-1 | %0 |
+| 4b | fr→tr | 77/93 | 0.386 / 0.179 | 0.117 [0.082, 0.153] | %16 | %2 | %0 |
+| 4b | de→tr | 80/93 | 0.375 / 0.143 | 0.092 [0.056, 0.129] | %12 | %0 | %0 |
+
+"başlangıca oranı" p düşüşünün, silme yokken doğru cevaba verilen ortalama olasılığa bölümü.
+
+- **büyüdükçe artan iki şey var.** çeviri becerisi (15 → 49 → 77 doğru) ve ara katlarda görünen ingilizce (logit lens
+  tepe değeri 0.075 → 0.229 → 0.386). ekli kelimelerde tam doğru da aynı şekilde artıyor (2 → 14 → 40, 58 ifadede).
+- **artmayan şey ingilizceye dayanma oranı.** arındırılmış ingilizceyi silmek üç boyutta da doğru cevabın olasılığının
+  kabaca %12-24'ünü götürüyor. kontrol dili ve ilgisiz ingilizce kelime üç boyutta da %8'in altında, çoğu sıfıra yakın.
+  0.8b'deki etki mutlak olarak küçüktü çünkü 0.8b doğru cevaba zaten düşük olasılık veriyor (ortalama 0.07).
+- **en net sonuç 2b'de.** doğru cevap sayısı fr→tr'de 49'dan 38'e, de→tr'de 51'den 42'ye düşüyor. mcnemar'da
+  13'e 2 (p 0.007) ve 10'a 1 (p 0.012). 4b'de aynı test sınırdaydı (p 0.07 ile 0.09), çünkü 4b çoğu kelimede o kadar emin
+  ki olasılık düşse de en üstteki cevap değişmiyor. 0.8b'de ise az kelime doğru başladığı için değişecek bir şey yok.
+- **benzemeyen kelimeler.** 2b'de fr→tr'nin benzemeyen 83 kelimesinde düşüş 0.081 [0.056, 0.110], doğru 46'dan 35'e.
+  de→tr'nin benzemeyen 57 kelimesinde 0.086 [0.056, 0.116], doğru 30'dan 24'e. etki 4b'deki gibi kaynağa benzerlikten
+  gelmiyor. 0.8b'de bu ayrımı yapacak güç yok.
+- **kaynak kelimeyi silmek** 2b'de biraz daha etkili (0.047 ve 0.067), ama doğru sayısında anlamlı değil (p 0.29 ve 0.07).
+
+bu tablo 6. bölümden sonraki hikâyemi değiştirdi. "küçük model ingilizce kullanmıyor, büyük model kullanıyor" demiştim.
+üç boyut yan yana konunca daha doğru cümle şu oluyor. üç boyut da çevirirken ara katlarda ingilizceye hizalı yönü
+kabaca aynı oranda kullanıyor. büyüdükçe değişen şey bu ingilizcenin ne kadar görünür olduğu ve modelin çeviride ne kadar
+iyi olduğu. 0.8b'de "ingilizce yok" sonucu, testin gücünün yetmemesinden geliyordu.
+
+bunun bir sınırı var. üç boyut ve iki dil çifti küçük bir örnek. "oran sabit" demek yerine "büyüklükle belirgin bir
+artış ya da azalış yok" demek daha dürüst.
+
 ## ne çıkardım
 
 1. qwen'in ara katları ingilizce kelimelere yakın, kumru'nunkiler türkçeye.
-2. küçük qwen'de (0.8b) bu ingilizce büyük ölçüde mercekten geliyor. tuned lens ile ingilizce ve türkçe başa baş,
-   müdahale testleri ingilizcenin kullanıldığını göstermedi. ama 0.8b çeviride zayıf (93 kelimenin 15'i), o yüzden
-   testin küçük bir etkiyi yakalayacak gücü yoktu. arındırılmış ingilizceyi silmek olasılığı 0.071'den 0.050'ye
-   düşürdü, almanca 0.066. yani "yok" yerine "ölçülemeyecek kadar küçük" demek daha doğru. qwen'in çıkış katmanı ingilizce ağırlıklı,
-   o yüzden ortadaki kavram ingilizce kelimelere yakın okunuyor. aynı etki kumru'da türkçe için var.
-3. büyük qwen'de (4b) tablo değişiyor. ingilizce tuned lens'te de hedefin iki katı ve o kavramın ingilizce kelimesini
-   ara katlardan silmek türkçe çeviriyi bozuyor. almancayı ya da ilgisiz bir ingilizce kelimeyi silmek bozmuyor.
-   kaynak kelime kontrolü ve benzemeyen kelimeler (chien/dog) de bunu destekliyor. 4b türkçeye çevirirken ara katlarda
-   kavramı ingilizce kelimeye hizalı bir yönde tutuyor ve bu yönü kullanıyor.
+2. üç qwen boyutunda da (0.8b, 2b, 4b) o kavramın ingilizce kelimesine hizalı yönü ara katlardan silmek türkçe
+   çeviriyi bozuyor. hedef ve kaynaktan arındırılmış haliyle bile doğru cevabın olasılığının %12-24'ü gidiyor.
+   almancayı ya da ilgisiz bir ingilizce kelimeyi silmek bozmuyor. kaynak kelime kontrolü ve benzemeyen kelimeler
+   (chien/dog) de bunu destekliyor. en net sonuç 2b'de, doğru cevap sayısı da anlamlı düşüyor (p 0.007 ve 0.012).
+3. büyüdükçe değişen şey ingilizcenin görünürlüğü. logit lens'te ara katlardaki ingilizce 0.8b'de 0.075, 4b'de 0.386.
+   0.8b'de tuned lens ingilizce ile türkçeyi başa baş gösteriyor, 4b'de ingilizce hedefin iki katı. 0.8b'de ilk
+   müdahale testlerinin bir şey göstermemesi modelin çeviride zayıf olmasından (93 kelimenin 15'i) ve testin gücünün
+   yetmemesinden geliyordu.
 4. bu bir ingilizce cümle planı gibi görünmüyor. "evlerimizden" üretirken ara katlarda "house" var, "from" yok.
    ingilizce kavramın adı olarak duruyor, kelime sırası türkçenin.
 5. kumru fransızcaya giderken ara katlarda ingilizce görünüyor ama silmek bir şey değiştirmiyor. köprü değil.
@@ -221,7 +258,8 @@ olduğunu düşündürüyor.
 
 ## açık sorular
 
-- 0.8b ile 4b arasındaki fark modelin büyüklüğünden mi geliyor? arada qwen3.5-2b var, aynı testlerden geçirmek lazım.
+- oranın büyüklükle değişmediğini üç boyuttan söylüyorum. 9b gibi daha büyük bir modelde aynı oran devam ediyor mu,
+  bilmiyorum (t4'e sığmıyor).
 - 4b tuned lens 800 adım eğitildi, kl hâlâ 2.4 ile 3.2 arasında gidip geliyor. daha uzun eğitim ingilizceyi biraz daha
   küçültebilir. silme sonucu mercekten bağımsız olduğu için ana bulguyu değiştirmez.
 - silme sadece kelimenin ilk token'ının çıkış vektörünü kaldırıyor. kavramın ingilizce temsili bundan daha geniş olabilir,
