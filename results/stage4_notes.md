@@ -63,6 +63,22 @@ yani logit lens her modelde o modelin çıkış katmanının ağırlıklı oldu�
 çeviriciler kısa eğitildi, kl değeri adımdan adıma 1.3 ile 2.5 arasında (kumru'da 0.7 ile 1.5) gidip geliyor.
 daha uzun eğitim sayıları biraz değiştirebilir.
 
+## 4. ekli kelimeler
+
+fransızca "de nos maisons" (ingilizcesi "from our houses") türkçede tek kelime, "evlerimizden". türkçe cevap kökle ("ev")
+başlıyor, ingilizce karşılığı edatla ("from"). 20 isim ve 3 hal ("-den", "-de", "-e"), toplam 60 ifade.
+ara katlarda türkçe köke, ingilizce edata ve ingilizce isme bakıyorum. kod `src/stage4_suffix.py`, sonuçlar `data/stage4_suffix_*.json`.
+
+- iki model de bu görevde zayıf. qwen 58 ifadenin 2'sini tam doğru yazdı, "evlerimizden" yerine "mehanelerimizden" gibi
+  şeyler çıkardı. kumru 8/58. kumru kökü genelde buluyor ama hal ekini karıştırıyor ("ağaçlarımızdan" yerine "ağaçlarımızda").
+- ingilizce edat ("from", "in", "to") logit lens'te hiçbir modelde görünmüyor. tuned lens'te qwen'in 16-18. katmanlarında
+  %1-2 civarında küçük bir iz var, türkçe kökten biraz yüksek. bu kadar zayıf bir modelde bu büyüklükte bir farkı yorumlamıyorum.
+- qwen'de logit lens'te ingilizce isim ("house") 19-22. katmanlarda türkçe kökle aynı seviyede ya da üstünde.
+- kumru'da türkçe kök 13. katmandan sonra açıkça yükseliyor, ingilizce iz yok.
+
+sonuç yok sayılır. modeller ekli kelimeyi doğru üretemediği için ara katlarda ne planladıklarını okumak anlamsız kalıyor.
+daha güçlü bir modelle (örneğin qwen3.5'in büyük bir sürümü) denemek gerekir.
+
 ## ne çıkardım
 
 1. qwen'in ara katları ingilizce kelimelere yakın, kumru'nunkiler türkçeye.
@@ -76,4 +92,4 @@ daha uzun eğitim sayıları biraz değiştirebilir.
 ## açık sorular
 
 - kumru tr→fr'de ingilizceyi silmek zarar verdi (11 doğrudan 5'e). kumru fransızcaya giderken ingilizceyi köprü olarak mı kullanıyor?
-- ekli kelimelerde ("evlerimizden") ne oluyor?
+- ekli kelimeler daha güçlü bir modelde nasıl görünüyor?
