@@ -58,6 +58,7 @@ def main():
     ap.add_argument("--pairs", default="fr-tr,de-tr,tr-fr")
     ap.add_argument("--out", default="data")
     ap.add_argument("--device", default="cuda")
+    ap.add_argument("--lens_out", default="/content")
     a = ap.parse_args()
     torch.manual_seed(0); random.seed(0)
 
@@ -68,8 +69,9 @@ def main():
     n_layers = len(model.model.layers)
     d = model.config.hidden_size if hasattr(model.config, "hidden_size") else model.config.text_config.hidden_size
     norm = model.model.norm
-    Wu = model.lm_head.weight.float()
-    head = lambda h: norm(h.to(norm.weight.dtype)).float() @ Wu.T
+    # float16'da çıkış matrisini float32'ye çevirmiyorum (4b'de 2.5 gb), çarpımı yarım hassasiyette yapıyorum
+    Wu = model.lm_head.weight if a.dtype == "float16" else model.lm_head.weight.float()
+    head = lambda h: (norm(h.to(norm.weight.dtype)) @ Wu.T.to(norm.weight.dtype)).float()
 
     # 1. veri: dilleri sırayla değiştirerek
     t0 = time.time()
@@ -109,7 +111,7 @@ def main():
 
     name = a.model.split("/")[-1]
     os.makedirs(a.out, exist_ok=True)
-    torch.save(lens.state_dict(), f"/content/tunedlens_{name}.pt")  # büyük, depoya girmiyor
+    torch.save(lens.state_dict(), f"{a.lens_out}/tunedlens_{name}.pt")  # büyük, depoya girmiyor
 
     # 3. çeviri denemelerini hem logit lens hem tuned lens ile oku
     vocab_str = [tok.decode([i]) for i in range(len(tok))]
