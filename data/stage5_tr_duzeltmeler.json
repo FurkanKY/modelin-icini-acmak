@@ -1,0 +1,34 @@
+{
+ "kaynak": "bezir/MATH-500-multilingual, Turkish, test; HuggingFaceH4/MATH-500 200-299 ile unique_id eşleşmesi, 100/100 cevap aynı",
+ "duzeltmeler": [
+  {
+   "i": 294,
+   "eski": "kümedeki en büyük üç tamsayının en büyük olası değeri nedir?",
+   "yeni": "kümedeki üç tam sayının en büyüğünün alabileceği en büyük değer nedir?",
+   "adet": 1
+  },
+  {
+   "i": 249,
+   "eski": "t+2$'nin $t$'nin modulo $23$ tersi olduğu tek $\\textbf{tek}$ t tamsayısını bulunuz.",
+   "yeni": "t+2$'nin $t$'nin modulo $23$ tersi olduğu, $\\textbf{tek}$ sayı olan biricik $t$ tam sayısını bulunuz.",
+   "adet": 1
+  },
+  {
+   "i": 219,
+   "eski": "kalıntılarından",
+   "yeni": "kalanlarından",
+   "adet": 2
+  },
+  {
+   "i": 292,
+   "eski": "\\text{ne zaman}",
+   "yeni": "\\text{iken}",
+   "adet": 1
+  },
+  {
+   "i": 202,
+   "eski": "Alice yazı, Bob tura",
+   "yeni": "Alice tura, Bob yazı (İngilizcedeki heads/tails ile aynı)"
+  }
+ ]
+}

@@ -1,0 +1,49 @@
+{
+ "en_off": {
+  "n": 100,
+  "dogru": 41,
+  "takilan": 33,
+  "takilip_dogru": 1,
+  "ort_token": 1945
+ },
+ "tr_off": {
+  "n": 100,
+  "dogru": 9,
+  "takilan": 46,
+  "takilip_dogru": 0,
+  "ort_token": 2208
+ },
+ "tr_on": {
+  "n": 100,
+  "dogru": 13,
+  "takilan": 96,
+  "takilip_dogru": 9,
+  "ort_token": 3997
+ },
+ "zorla_tr": {
+  "n": 100,
+  "dogru": 18,
+  "biten": 26,
+  "dongusuz": 6
+ },
+ "zorla_en": {
+  "n": 100,
+  "dogru": 34,
+  "biten": 38,
+  "dongusuz": 4
+ },
+ "trq_eninst_off": {
+  "n": 100,
+  "dogru": 8,
+  "takilan": 58,
+  "takilip_dogru": 1,
+  "ort_token": 2649
+ },
+ "geri_off": {
+  "n": 100,
+  "dogru": 30,
+  "takilan": 34,
+  "takilip_dogru": 2,
+  "ort_token": 1994
+ }
+}
