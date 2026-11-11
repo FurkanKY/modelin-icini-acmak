@@ -330,6 +330,23 @@ olanlar hikâye için şart.
 
 ---
 
+## 5c. Çince kontrolü (sonradan eklendi)
+
+Soru: İngilizceyi silmek çeviriyi bozuyor, Almancayı silmek bozmuyor. Ama Qwen'in verisinde İngilizce Almancadan çok daha fazla. Belki etki "en çok görülen dil" etkisi. Qwen çok miktarda Çince metinle de eğitildi, o yüzden aynı testi kavramın Çincesiyle yaptım (`src/stage4_zh.py`).
+
+| model, çift | İngilizce (arındırılmış) | Çince (arındırılmış) | Almanca / Fransızca |
+|---|---|---|---|
+| 4B fr → tr | %16 | %15 | %2 |
+| 4B de → tr | %12 | %10 | %0 |
+| 2B fr → tr | %24 | %24 | %8 |
+| 2B de → tr | %22 | %22 | %-1 |
+
+- Çinceyi silmek İngilizceyi silmek kadar bozuyor. Aradaki farkın %95 aralığı dört durumda da sıfırı içeriyor.
+- Yani etki İngilizceye özgü değil. Qwen kavramı çok gördüğü dillerin kelimelerine yakın tutuyor.
+- Blogdaki sonuç buna göre değişti: "Qwen İngilizce düşünüyor" değil, "kavramı çok gördüğü dillerin yakınında tutuyor".
+
+**Göreli etkinin güven aralığı** (`src/istatistik.py`, bootstrap): İngilizcenin etkisi ile kontrol dilinin etkisi arasındaki fark altı model/çiftin hepsinde sıfırın üstünde (en düşük alt sınır 2 puan). Boyutlar arasında aralıklar örtüşüyor.
+
 ## 6. Çocuğa anlatır gibi: bütün hikâye
 
 > Bilgisayardaki konuşan programlar, kelimeleri bir fabrika bandından geçirerek cevap üretiyor. Biz bandı ortadan

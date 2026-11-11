@@ -1,11 +1,11 @@
 export const meta = {
   title: "modelin bir bitirme düğmesi var",
   date: "2026-11-10",
-  summary: "200 soruda modelin takılacağını cevabın ilk paragrafından tahmin edebildim. o yönü modelin içinde itince takılma azaldı ama doğru cevap sayısı artmadı.",
+  summary: "200 soruda modelin takılacağını cevabın ilk paragrafından tahmin edebildim. o yönü modelin içinde çevirince model daha çok ya da daha az takılıyor, rastgele bir yön ise bunu yapmıyor. doğru cevap sayısı hiçbir denemede artmadı.",
   kind: "experiment",
   facts: [
     { k: "model", v: "qwen3.5-0.8b", href: "https://huggingface.co/Qwen/Qwen3.5-0.8B" },
-    { k: "veri", v: "math-500 · 300 soru", href: "https://huggingface.co/datasets/HuggingFaceH4/MATH-500" },
+    { k: "veri", v: "math-500 · 400 soru", href: "https://huggingface.co/datasets/HuggingFaceH4/MATH-500" },
     { k: "ayar", v: "greedy · 4096 token" },
     { k: "donanım", v: "colab t4" },
     { k: "kod", v: "github", href: "https://github.com/FurkanKY/modelin-icini-acmak" },
@@ -81,13 +81,36 @@ yönü 0-199. sorulardan bulmuştum. denemeleri modelin hiç görmediği 200-299
 | hafif it | 25 | 39 | 1686 |
 | güçlü it | **21** | 30 | 1577 |
 
-yön silinince takılan cevap 34'ten 72'ye çıkıyor, ters çevrilince 100 cevabın 93'ü bitmiyor. öbür tarafa itince 21'e iniyor. yani model bitirip bitirmeyeceğine karar verirken bu yönü gerçekten kullanıyor.
+yön silinince takılan cevap 34'ten 72'ye çıkıyor, ters çevrilince 100 cevabın 93'ü bitmiyor. öbür tarafa itince 21'e iniyor.
+
+burada akla gelen ilk itiraz şu: modelin 15 katından herhangi bir yönü bu kadar sert silmek ya da itmek onu genel olarak bozabilir. belki takılma artışı yönle değil, modeli hırpalamakla ilgili. bunu görmek için aynı iki işlemi rastgele seçilmiş iki yönle tekrarladım.[^rastgele]
+
+| deneme | takılan | doğru |
+|---|---|---|
+| düzenlenmemiş | 33 | 41 |
+| rastgele yön 1, ters çevir | 32 | 36 |
+| rastgele yön 2, ters çevir | 40 | 35 |
+| rastgele yön 1, güçlü it | 41 | 37 |
+| rastgele yön 2, güçlü it | 38 | 34 |
+
+rastgele yönler takılmayı 32 ile 41 arasında bırakıyor. bitirme yönü ise aynı işlemlerle 93'e çıkarıyor ya da 21'e indiriyor. yani etki yönün kendisinden geliyor ve model bitirip bitirmeyeceğine karar verirken bu yönü gerçekten kullanıyor.
+
+rastgele yönlerin bir yan etkisi de var. doğru sayısı 4 ile 7 arasında düşüyor. yani modelin içini kurcalamanın genel bir bedeli var ve aşağıda göreceğimiz doğru sayısı düşüşünün bir kısmı bu bedelden geliyor.
 
 ters çevrilmiş modelin cevapları ilginç. 18 cevapta model doğru sayıyı yazıyor ama bir türlü bitiremiyor. ilk yazıdaki "model biliyor ama karar veremiyor" cümlesinin elle üretilmiş hali gibi.
 
 ## doğru cevap ise artmadı
 
-beklediğim şey itince takılan cevapların bitmesi ve bir kısmının doğru çıkmasıydı. takılan cevaplar gerçekten bitti. hafif itmede 16 cevap takılmaktan kurtuldu ve bunların 8'i doğru bitti. aynı anda başka 15 doğru cevap yanlışa döndü, 13 yanlış cevap da doğruya. sonuçta toplam neredeyse hiç değişmedi. güçlü itmede durum daha kötü. 19 cevap kurtuldu, 5'i doğru bitti ve doğru sayısı 41'den 30'a düştü.
+beklediğim şey itince takılan cevapların bitmesi ve bir kısmının doğru çıkmasıydı. takılan cevaplar gerçekten bitti. hafif itmede 16 cevap takılmaktan kurtuldu ve bunların 8'i doğru bitti. aynı anda başka 15 doğru cevap yanlışa döndü, 13 yanlış cevap da doğruya. sonuçta toplam neredeyse hiç değişmedi. güçlü itmede durum daha kötü. 19 cevap kurtuldu, 5'i doğru bitti ve doğru sayısı 41'den 30'a düştü. bu 11 soruluk düşüşün 4 ile 7 sorusu, yukarıda gördüğümüz gibi, herhangi bir yöne bu kuvvetle itmenin genel bedeli.
+
+100 soru az olduğu için hafif itmeyi modelin hiç görmediği 100 soruda daha denedim (300-399).
+
+| deneme (300-399) | takılan | doğru |
+|---|---|---|
+| düzenlenmemiş | 29 | 47 |
+| hafif it | 27 | 42 |
+
+burada hafif itme takılmayı neredeyse hiç değiştirmedi. 12 cevap kurtuldu ama 10 biten cevap bu sefer takıldı. doğru sayısı yine düştü. iki 100'lük grubu birlikte sayınca hafif itme 28 cevabı kurtarıp 17 cevabı takılmaya itiyor, bu da şanstan ayırt edilemiyor (p ≈ 0.14). yani hafif itmenin etkisi ilk 100 soruda gördüğümden daha zayıf. güçlü itme ve ters çevirme ise açık ara etkili. doğru cevap sayısı ise hiçbir denemede artmadı.
 
 aslında bu mantıklı. modeli bitirmeye zorlayınca kararsız kaldığı cevabı da yazıp geçiyor. bazen kararsızlığında haklı, cevap gerçekten yanlış. düğme modele "bitir" diyor ama ona doğru cevabın ne olduğunu söylemiyor.
 
@@ -107,4 +130,6 @@ kodlar ve ham cevaplar [github'da](https://github.com/FurkanKY/modelin-icini-acm
 
 [^surum]: ilk 50 soru bu sefer 18 takılan ve 23 doğru çıktı, ilk yazıda 19 ve 20'ydi. arada colab'daki transformers sürümü değişmişti. greedy decoding'de bile kütüphane sürümü bu kadar fark yaratabiliyor.
 
-[^test]: iki yönlü binom testinde p ≈ 0.006. itme denemelerinde "takıldı→bitti" ile "bitti→takıldı" sayılarına aynı testi uyguladım. hafif itmede 16'ya 7 (p ≈ 0.09), güçlü itmede 19'a 6 (p ≈ 0.015). 100 soru bu boyuttaki etkileri ayırmak için az, o yüzden bu sayıları şimdilik yön gösterici olarak okuyorum.
+[^rastgele]: rastgele yönler normal dağılımdan çekilip birim uzunluğa getirildi (tohum 1 ve 2), bitirme yönüyle benzerlikleri sıfıra yakın. "ters çevir" 8-22. katlarda W − 1.5u(uᵀW), "güçlü it" 15. katın çıkışına −0.6u, ikisi de bitirme yönündeki ayarın aynısı. bu kontroller sonradan, kütüphane sürümü değişmiş bir oturumda çalıştı. o yüzden aynı oturumda yeniden çalıştırdığım düzenlenmemiş tabanla karşılaştırıyorum (34 yerine 33 takılan, doğru yine 41).
+
+[^test]: iki yönlü binom testinde p ≈ 0.006. itme denemelerinde "takıldı→bitti" ile "bitti→takıldı" sayılarına aynı testi uyguladım. hafif itmede 16'ya 7 (p ≈ 0.09), güçlü itmede 19'a 6 (p ≈ 0.015). 300-399. sorularda hafif itme 12'ye 10 (p ≈ 0.83). rastgele yönlerde 10'a 9 ile 11'e 18 arası, hiçbiri anlamlı değil.

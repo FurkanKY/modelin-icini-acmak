@@ -264,3 +264,31 @@ artış ya da azalış yok" demek daha dürüst.
   küçültebilir. silme sonucu mercekten bağımsız olduğu için ana bulguyu değiştirmez.
 - silme sadece kelimenin ilk token'ının çıkış vektörünü kaldırıyor. kavramın ingilizce temsili bundan daha geniş olabilir,
   yani gerçek etki ölçtüğümden büyük olabilir.
+
+## 8. çince kontrolü (11 kasım, `src/stage4_zh.py`)
+
+soru: etki ingilizceye mi özgü, yoksa modelin en çok gördüğü dile mi? stage4_source ile aynı kelimeler, katlar, arındırma. kavramın çincesi (106 kelime, hiçbiri atlanmadı). ham sonuçlar `data/stage4_zh_*.json`.
+
+| model, çift | hedef | en_dik2 | zh | zh_dik2 | kontrol_dik2 | en_dik2 − zh_dik2 |
+|---|---|---|---|---|---|---|
+| 4b fr-tr | %15 | %16 | %22 | %15 | %2 | +0.013 [−0.007, +0.033] |
+| 4b de-tr | %15 | %12 | %17 | %10 | %0 | +0.012 [−0.009, +0.035] |
+| 2b fr-tr | %59 | %24 | %35 | %24 | %8 | −0.002 [−0.020, +0.017] |
+| 2b de-tr | %56 | %22 | %38 | %22 | %−1 | −0.002 [−0.020, +0.016] |
+
+(göreli p düşüşü. son sütun mutlak p farkı ve %95 bootstrap aralığı.)
+
+sonuç: çinceyi silmek ingilizceyi silmek kadar bozuyor. etki ingilizceye özgü değil. qwen kavramı çok gördüğü dillerin (ingilizce, çince) kelimelerine yakın tutuyor, almanca ve fransızca değil.
+
+## 9. göreli etkinin güven aralığı (`src/istatistik.py`)
+
+| model | çift | en_dik2 göreli | kontrol_dik2 göreli | fark |
+|---|---|---|---|---|
+| 0.8b | fr-tr | %18 [7, 29] | %2 [−5, 10] | 16 [5, 26] puan |
+| 0.8b | de-tr | %16 [2, 28] | %2 [−5, 8] | 14 [2, 25] puan |
+| 2b | fr-tr | %24 [17, 31] | %8 [3, 14] | 16 [10, 22] puan |
+| 2b | de-tr | %22 [16, 28] | %−1 [−4, 3] | 22 [17, 28] puan |
+| 4b | fr-tr | %16 [12, 21] | %2 [1, 4] | 14 [9, 19] puan |
+| 4b | de-tr | %12 [7, 17] | %0 [−1, 1] | 12 [8, 16] puan |
+
+aralıklar boyutlar arasında örtüşüyor. "oran boyutla değişmiyor" demek için yeterli değil ama belirgin bir artış ya da azalış da yok.

@@ -1,0 +1,96 @@
+{
+ "rand1_ters": {
+  "n": 100,
+  "dogru": 36,
+  "takilan": 32,
+  "takilip_dogru": 0,
+  "ort_token": 1948
+ },
+ "rand1_guclu": {
+  "n": 100,
+  "dogru": 37,
+  "takilan": 41,
+  "takilip_dogru": 1,
+  "ort_token": 2175
+ },
+ "rand2_ters": {
+  "n": 100,
+  "dogru": 35,
+  "takilan": 40,
+  "takilip_dogru": 1,
+  "ort_token": 2172
+ },
+ "think_train": {
+  "n": 100,
+  "dogru": 15,
+  "takilan": 100,
+  "takilip_dogru": 15,
+  "ort_token": 4096
+ },
+ "think_newrep_a10": {
+  "n": 100,
+  "dogru": 14,
+  "takilan": 100,
+  "takilip_dogru": 14,
+  "ort_token": 4096
+ },
+ "think_newrep_a15": {
+  "n": 100,
+  "dogru": 6,
+  "takilan": 100,
+  "takilip_dogru": 6,
+  "ort_token": 4096
+ },
+ "think_base_v2": {
+  "n": 100,
+  "dogru": 10,
+  "takilan": 100,
+  "takilip_dogru": 10,
+  "ort_token": 4096
+ },
+ "ext_base": {
+  "n": 100,
+  "dogru": 47,
+  "takilan": 29,
+  "takilip_dogru": 1,
+  "ort_token": 1860
+ },
+ "ext_steer03": {
+  "n": 100,
+  "dogru": 42,
+  "takilan": 27,
+  "takilip_dogru": 0,
+  "ort_token": 1768
+ },
+ "rand2_guclu": {
+  "n": 100,
+  "dogru": 34,
+  "takilan": 38,
+  "ham_cevaplar": "colab oturumu sıfırlanınca kayboldu"
+ },
+ "think_reppen": {
+  "n": 100,
+  "dogru": 16,
+  "takilan": 97,
+  "takilip_dogru": 13,
+  "ort_token": 4051,
+  "birebir_dongu": 62,
+  "dongu_medyan": 1083,
+  "think_kapanan": 3,
+  "ham_cevaplar": "colab oturumu sıfırlanınca kayboldu"
+ },
+ "think_16k": {
+  "n": 25,
+  "dogru": 3,
+  "takilan": 25,
+  "takilip_dogru": 3,
+  "ort_token": 16384,
+  "birebir_dongu": 23,
+  "think_kapanan": 0,
+  "ayni_25_soruda_4096": {
+   "dogru": 3,
+   "birebir_dongu": 24
+  },
+  "ham_cevaplar": "colab oturumu sıfırlanınca kayboldu"
+ }
+}

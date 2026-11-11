@@ -119,3 +119,24 @@ ham cevaplar `data/stage3_think_*.json`.
 - 32.768 token sınırıyla düşünme modunda kaç cevabın gerçekten bittiği (t4'te 100 soru için çok uzun).
 - mit yönü nasıl bulduğunu yayınlamadı. bizim tekrar yönümüz onunkiyle aynı olmayabilir.
 - 100 soru, bu boyuttaki etkileri ayırmak için az.
+
+## kontroller (11 kasım, `src/stage3_kontrol.py`, `src/istatistik.py`)
+
+eleştiriye cevap veren denemeler. özetler `data/stage3_kontrol_summary.json`. rand2_guclu, think_reppen ve think_16k'nin ham cevapları colab oturumu sıfırlanınca kayboldu, sayıları özette duruyor.
+
+| deneme | ne | takılan | doğru | not |
+|---|---|---|---|---|
+| rand1_ters / rand2_ters | rastgele yön, 8-22. kat, α = 1.5 | 32 / 40 | 36 / 35 | bitirme yönünde 93 |
+| rand1_guclu / rand2_guclu | rastgele yön, 15. kat, −0.6·u | 41 / 38 | 37 / 34 | bitirme yönünde 21 |
+| ext_base / ext_steer03 | 300-399, taban / hafif it | 29 / 27 | 47 / 42 | geçiş 12/10, p 0.83 |
+| think_reppen | düşünme açık, repetition_penalty 1.1 | 97 | 16 | birebir döngü 62 (95'ten), medyan 1083. kelime, 3 think kapandı |
+| think_16k | düşünme açık, 200-224, 16.384 token | 25/25 | 3 | aynı 25'te 4096: 3 doğru. think hiç kapanmadı, döngü aynı kelimede |
+| think_train | düşünme açık, 0-99 (yön için) | 100 | 15 | |
+| think_base_v2 | düşünme açık, aynı oturumda taban | 100 | 10 | ilk çalıştırmayla birebir aynı (95 döngü, 524) |
+| think_newrep_a10 / a15 | düşünme modundan tekrar yönü, 8-22. kat | 100 / 100 | 14 / 6 | döngü 98 / 99, medyan 451 / 398 |
+
+- etki yöne özgü. rastgele yönler takılmayı 32-41'de bırakıyor. rastgele yönler doğru sayısını 4-7 düşürüyor, bu genel bir bedel.
+- hafif itme 200-299'da 16/7 (p 0.09), 300-399'da 12/10 (p 0.83), birlikte 28/17 (p 0.14). zayıf. güçlü itme 19/6 (p 0.015).
+- düşünme modu tekrar yönü: 297.038 tekrar / 61.362 yeni an, bitirme yönüyle kosinüs 0.091. silmek döngüyü kırmıyor, erkene çekiyor. eski tekrar yönünde de aynısı olmuştu.
+- tekrar cezası döngüyü kısmen kırıyor ama model aynı şüpheyi başka kelimelerle sürdürüyor.
+- daha uzun sınır hiçbir şey değiştirmiyor. "4096 yetmiyor" itirazı geçersiz.

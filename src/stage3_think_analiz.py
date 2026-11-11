@@ -38,7 +38,7 @@ def main(names):
     print("| deneme | doğru | sınıra dayanan | birebir döngüye giren | döngünün başladığı kelime (medyan) |")
     print("|---|---|---|---|---|")
     summary = {}
-    for p in (D / "stage3_think_summary.json", D / "stage3_summary.json"):
+    for p in (D / "stage3_think_summary.json", D / "stage3_summary.json", D / "stage3_kontrol_summary.json"):
         if p.exists():
             summary.update(json.load(open(p, encoding="utf-8")))
     for n in names:
