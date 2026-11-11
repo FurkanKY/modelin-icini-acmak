@@ -1,0 +1,14 @@
+{
+ "dongu": {
+  "n": 100,
+  "dogru": 35,
+  "biten": 40,
+  "ort_kesilen_kelime": 635
+ },
+ "son": {
+  "n": 100,
+  "dogru": 33,
+  "biten": 34,
+  "ort_kesilen_kelime": 1841
+ }
+}

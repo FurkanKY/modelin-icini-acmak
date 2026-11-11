@@ -140,3 +140,18 @@ eleştiriye cevap veren denemeler. özetler `data/stage3_kontrol_summary.json`. 
 - düşünme modu tekrar yönü: 297.038 tekrar / 61.362 yeni an, bitirme yönüyle kosinüs 0.091. silmek döngüyü kırmıyor, erkene çekiyor. eski tekrar yönünde de aynısı olmuştu.
 - tekrar cezası döngüyü kısmen kırıyor ama model aynı şüpheyi başka kelimelerle sürdürüyor.
 - daha uzun sınır hiçbir şey değiştirmiyor. "4096 yetmiyor" itirazı geçersiz.
+
+### döngüyü zorla kesmek ve örnekleme (11 kasım, `src/stage3_zorla.py`, `think_sample`)
+
+| deneme (düşünme açık, 200-299) | sınır | birebir döngü | medyan | doğru |
+|---|---|---|---|---|
+| greedy (think_base_v2) | 100 | 95 | 524 | 10 |
+| örnekleme t 0.6, top_p 0.95, top_k 20, tohum 0 | 100 | 61 | 1123 | 11 |
+| döngü başında kes + `</think>`, 1024 token cevap | | | | **35** |
+| 4096 sonunda kes + `</think>` | | | | 33 |
+
+- zorla kesme: 25 yanlış→doğru, 0 doğru→yanlış. 1024 token'da 40 cevap bitti, 35 alt sınır. sadece `</think>` sonrası puanlandı.
+- döngüde kesmek ile sonda kesmek arasında fark yok (30 ikisinde, 5 sadece döngüde, 3 sadece sonda).
+- düşünme kapalı 41 > zorla kesilmiş düşünme 35. bu boyutta düşünme modu kazanç getirmiyor.
+- örnekleme birebir kopyayı azaltıyor ama bitirmiyor (1/100 think kapandı). sorun greedy'nin yan ürünü değil.
+- ham dosyalar: `data/stage3_zorla_{dongu,son}.json`, `data/stage3_zorla_summary.json`, `data/stage3_think_sample.json`.

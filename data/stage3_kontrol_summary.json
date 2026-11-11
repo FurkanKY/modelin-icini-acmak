@@ -92,5 +92,15 @@
    "birebir_dongu": 24
   },
   "ham_cevaplar": "colab oturumu sıfırlanınca kayboldu"
+ },
+ "think_sample": {
+  "n": 100,
+  "dogru": 11,
+  "takilan": 100,
+  "takilip_dogru": 11,
+  "ort_token": 4096,
+  "birebir_dongu": 61,
+  "dongu_medyan": 1123,
+  "think_kapanan": 1
  }
 }

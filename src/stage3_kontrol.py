@@ -16,6 +16,8 @@
    - ext_base, ext_steer03
 6. colab oturumu sıfırlanınca kütüphane sürümü değişti. newrep denemeleri think_base_v2 ile karşılaştırılıyor.
    - think_base_v2
+7. greedy döngüyü kendisi mi üretiyor? qwen düşünme modunda greedy yerine örnekleme öneriyor (t 0.6, top_p 0.95, top_k 20).
+   - think_sample
 
 her deneme data/stage3_{isim}.json'a her partide yazılıyor, özet data/stage3_kontrol_summary.json.
 yarıda kalırsa aynı komut kaldığı yerden devam ediyor.
@@ -41,6 +43,8 @@ JOBS = {
     "ext_base": dict(rows=(300, 400)),
     "ext_steer03": dict(rows=(300, 400), steer_u15=0.3),
     "think_base_v2": dict(think=True),  # aynı oturumda düşünme modu tabanı (kütüphane sürümü değişince)
+    # qwen'in düşünme modu için önerdiği örnekleme. greedy döngüyü kendisi mi üretiyor?
+    "think_sample": dict(think=True, seed=0, gen=dict(do_sample=True, temperature=0.6, top_p=0.95, top_k=20)),
 }
 
 
@@ -105,7 +109,9 @@ def main():
                       f"{float(u_newrep @ u15):.3f}", flush=True)
             saved = edit(model, u_newrep, **cfg["newrep"])
         if "gen" in cfg:
-            model.generate = lambda *args, **kw: orig_generate(*args, **kw, **cfg["gen"])
+            model.generate = lambda *args, **kw: orig_generate(*args, **{**kw, **cfg["gen"]})
+        if "seed" in cfg:
+            torch.manual_seed(cfg["seed"])
 
         try:
             res = run(model, tok, prompt_fn(think), im_end, rows, f"{a.data}/stage3_{j}.json",
