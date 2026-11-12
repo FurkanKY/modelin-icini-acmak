@@ -1,56 +1,56 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 326" width="640" height="326" role="img" aria-label="the middle layers show best whether the model will loop">
 <rect width="640" height="326" fill="var(--bg, #fafaf8)"/>
-<text x="44" y="30" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="16" font-weight="600" fill="var(--ink, #1d1d1f)" letter-spacing="-0.2">the middle layers show best whether the model will loop</text>
-<text x="44" y="50" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" fill="var(--grey, #6e6e73)">accuracy of predicting a loop from the first 512 tokens of the answer</text>
-<line x1="44" x2="488" y1="276.0" y2="276.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
-<text x="36" y="280.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">50%</text>
-<line x1="44" x2="488" y1="209.3" y2="209.3" stroke="var(--hair, rgba(29,29,31,0.10))"/>
-<text x="36" y="213.3" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">60%</text>
-<line x1="44" x2="488" y1="142.7" y2="142.7" stroke="var(--hair, rgba(29,29,31,0.10))"/>
-<text x="36" y="146.7" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">70%</text>
-<line x1="44" x2="488" y1="76.0" y2="76.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
-<text x="36" y="80.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">80%</text>
-<text x="44.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">0</text>
-<text x="118.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">4</text>
-<text x="192.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">8</text>
-<text x="266.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">12</text>
-<text x="340.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">16</text>
-<text x="414.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">20</text>
-<text x="488.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">24</text>
-<text x="266.0" y="316" text-anchor="middle" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">layer</text>
-<line x1="44" x2="488" y1="196.0" y2="196.0" stroke="var(--grey, #6e6e73)" stroke-width="1" stroke-dasharray="3 4"/>
-<text x="496" y="200.0" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">chance · 62%</text>
-<line x1="44" x2="488" y1="156.0" y2="156.0" stroke="var(--grey, #6e6e73)" stroke-width="1" stroke-dasharray="3 4"/>
-<text x="496" y="160.0" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">difficulty only · 68%</text>
-<polyline points="44.0,236.0 62.5,169.3 81.0,196.0 99.5,156.0 118.0,142.7 136.5,142.7 155.0,129.3 173.5,129.3 192.0,129.3 210.5,116.0 229.0,116.0 247.5,89.3 266.0,102.7 284.5,102.7 303.0,102.7 321.5,116.0 340.0,116.0 358.5,89.3 377.0,102.7 395.5,116.0 414.0,116.0 432.5,116.0 451.0,129.3 469.5,129.3 488.0,129.3" fill="none" stroke="var(--chart-acc, #c2410c)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="496" y="133.3" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--ink, #1d1d1f)">inside the model</text>
-<circle cx="44.0" cy="236.0" r="9" fill="transparent"><title>layer 0: 56%</title></circle>
-<circle cx="62.5" cy="169.3" r="9" fill="transparent"><title>layer 1: 66%</title></circle>
-<circle cx="81.0" cy="196.0" r="9" fill="transparent"><title>layer 2: 62%</title></circle>
-<circle cx="99.5" cy="156.0" r="9" fill="transparent"><title>layer 3: 68%</title></circle>
-<circle cx="118.0" cy="142.7" r="9" fill="transparent"><title>layer 4: 70%</title></circle>
-<circle cx="136.5" cy="142.7" r="9" fill="transparent"><title>layer 5: 70%</title></circle>
-<circle cx="155.0" cy="129.3" r="9" fill="transparent"><title>layer 6: 72%</title></circle>
-<circle cx="173.5" cy="129.3" r="9" fill="transparent"><title>layer 7: 72%</title></circle>
-<circle cx="192.0" cy="129.3" r="9" fill="transparent"><title>layer 8: 72%</title></circle>
-<circle cx="210.5" cy="116.0" r="9" fill="transparent"><title>layer 9: 74%</title></circle>
-<circle cx="229.0" cy="116.0" r="9" fill="transparent"><title>layer 10: 74%</title></circle>
-<circle cx="247.5" cy="89.3" r="9" fill="transparent"><title>layer 11: 78%</title></circle>
-<circle cx="266.0" cy="102.7" r="9" fill="transparent"><title>layer 12: 76%</title></circle>
-<circle cx="284.5" cy="102.7" r="9" fill="transparent"><title>layer 13: 76%</title></circle>
-<circle cx="303.0" cy="102.7" r="9" fill="transparent"><title>layer 14: 76%</title></circle>
-<circle cx="321.5" cy="116.0" r="9" fill="transparent"><title>layer 15: 74%</title></circle>
-<circle cx="340.0" cy="116.0" r="9" fill="transparent"><title>layer 16: 74%</title></circle>
-<circle cx="358.5" cy="89.3" r="9" fill="transparent"><title>layer 17: 78%</title></circle>
-<circle cx="377.0" cy="102.7" r="9" fill="transparent"><title>layer 18: 76%</title></circle>
-<circle cx="395.5" cy="116.0" r="9" fill="transparent"><title>layer 19: 74%</title></circle>
-<circle cx="414.0" cy="116.0" r="9" fill="transparent"><title>layer 20: 74%</title></circle>
-<circle cx="432.5" cy="116.0" r="9" fill="transparent"><title>layer 21: 74%</title></circle>
-<circle cx="451.0" cy="129.3" r="9" fill="transparent"><title>layer 22: 72%</title></circle>
-<circle cx="469.5" cy="129.3" r="9" fill="transparent"><title>layer 23: 72%</title></circle>
-<circle cx="488.0" cy="129.3" r="9" fill="transparent"><title>layer 24: 72%</title></circle>
-<circle cx="247.5" cy="89.3" r="4.5" fill="var(--chart-acc, #c2410c)" stroke="var(--bg, #fafaf8)" stroke-width="2"/>
-<text x="247.5" y="77.3" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--ink, #1d1d1f)">78%</text>
-<circle cx="358.5" cy="89.3" r="4.5" fill="var(--chart-acc, #c2410c)" stroke="var(--bg, #fafaf8)" stroke-width="2"/>
-<text x="358.5" y="77.3" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--ink, #1d1d1f)">78%</text>
+<text x="46" y="30" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="16" font-weight="600" fill="var(--ink, #1d1d1f)" letter-spacing="-0.2">the middle layers show best whether the model will loop</text>
+<text x="46" y="50" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" fill="var(--grey, #6e6e73)">accuracy of predicting a loop from the first 512 tokens of the answer</text>
+<line x1="46" x2="472" y1="276.0" y2="276.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="38" y="280.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">50%</text>
+<line x1="46" x2="472" y1="209.3" y2="209.3" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="38" y="213.3" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">60%</text>
+<line x1="46" x2="472" y1="142.7" y2="142.7" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="38" y="146.7" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">70%</text>
+<line x1="46" x2="472" y1="76.0" y2="76.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="38" y="80.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">80%</text>
+<text x="46.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">0</text>
+<text x="117.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">4</text>
+<text x="188.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">8</text>
+<text x="259.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">12</text>
+<text x="330.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">16</text>
+<text x="401.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">20</text>
+<text x="472.0" y="296" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">24</text>
+<text x="259.0" y="316" text-anchor="middle" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">layer</text>
+<line x1="46" x2="472" y1="196.0" y2="196.0" stroke="var(--grey, #6e6e73)" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="480" y="200.0" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">chance · 62%</text>
+<line x1="46" x2="472" y1="156.0" y2="156.0" stroke="var(--grey, #6e6e73)" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="480" y="160.0" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">difficulty only · 68%</text>
+<polyline points="46.0,236.0 63.8,169.3 81.5,196.0 99.2,156.0 117.0,142.7 134.8,142.7 152.5,129.3 170.2,129.3 188.0,129.3 205.8,116.0 223.5,116.0 241.2,89.3 259.0,102.7 276.8,102.7 294.5,102.7 312.2,116.0 330.0,116.0 347.8,89.3 365.5,102.7 383.2,116.0 401.0,116.0 418.8,116.0 436.5,129.3 454.2,129.3 472.0,129.3" fill="none" stroke="var(--chart-acc, #c2410c)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="480" y="133.3" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--ink, #1d1d1f)">inside the model</text>
+<circle cx="46.0" cy="236.0" r="9" fill="transparent"><title>layer 0: 56%</title></circle>
+<circle cx="63.8" cy="169.3" r="9" fill="transparent"><title>layer 1: 66%</title></circle>
+<circle cx="81.5" cy="196.0" r="9" fill="transparent"><title>layer 2: 62%</title></circle>
+<circle cx="99.2" cy="156.0" r="9" fill="transparent"><title>layer 3: 68%</title></circle>
+<circle cx="117.0" cy="142.7" r="9" fill="transparent"><title>layer 4: 70%</title></circle>
+<circle cx="134.8" cy="142.7" r="9" fill="transparent"><title>layer 5: 70%</title></circle>
+<circle cx="152.5" cy="129.3" r="9" fill="transparent"><title>layer 6: 72%</title></circle>
+<circle cx="170.2" cy="129.3" r="9" fill="transparent"><title>layer 7: 72%</title></circle>
+<circle cx="188.0" cy="129.3" r="9" fill="transparent"><title>layer 8: 72%</title></circle>
+<circle cx="205.8" cy="116.0" r="9" fill="transparent"><title>layer 9: 74%</title></circle>
+<circle cx="223.5" cy="116.0" r="9" fill="transparent"><title>layer 10: 74%</title></circle>
+<circle cx="241.2" cy="89.3" r="9" fill="transparent"><title>layer 11: 78%</title></circle>
+<circle cx="259.0" cy="102.7" r="9" fill="transparent"><title>layer 12: 76%</title></circle>
+<circle cx="276.8" cy="102.7" r="9" fill="transparent"><title>layer 13: 76%</title></circle>
+<circle cx="294.5" cy="102.7" r="9" fill="transparent"><title>layer 14: 76%</title></circle>
+<circle cx="312.2" cy="116.0" r="9" fill="transparent"><title>layer 15: 74%</title></circle>
+<circle cx="330.0" cy="116.0" r="9" fill="transparent"><title>layer 16: 74%</title></circle>
+<circle cx="347.8" cy="89.3" r="9" fill="transparent"><title>layer 17: 78%</title></circle>
+<circle cx="365.5" cy="102.7" r="9" fill="transparent"><title>layer 18: 76%</title></circle>
+<circle cx="383.2" cy="116.0" r="9" fill="transparent"><title>layer 19: 74%</title></circle>
+<circle cx="401.0" cy="116.0" r="9" fill="transparent"><title>layer 20: 74%</title></circle>
+<circle cx="418.8" cy="116.0" r="9" fill="transparent"><title>layer 21: 74%</title></circle>
+<circle cx="436.5" cy="129.3" r="9" fill="transparent"><title>layer 22: 72%</title></circle>
+<circle cx="454.2" cy="129.3" r="9" fill="transparent"><title>layer 23: 72%</title></circle>
+<circle cx="472.0" cy="129.3" r="9" fill="transparent"><title>layer 24: 72%</title></circle>
+<circle cx="241.2" cy="89.3" r="4.5" fill="var(--chart-acc, #c2410c)" stroke="var(--bg, #fafaf8)" stroke-width="2"/>
+<text x="241.2" y="77.3" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--ink, #1d1d1f)">78%</text>
+<circle cx="347.8" cy="89.3" r="4.5" fill="var(--chart-acc, #c2410c)" stroke="var(--bg, #fafaf8)" stroke-width="2"/>
+<text x="347.8" y="77.3" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--ink, #1d1d1f)">78%</text>
 </svg>

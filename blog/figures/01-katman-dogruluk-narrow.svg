@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 350" width="360" height="350" role="img" aria-label="modelin takılacağı en çok orta katlarda belli oluyor">
+<rect width="360" height="350" fill="var(--bg, #fafaf8)"/>
+<text x="10" y="24" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="15" font-weight="600" fill="var(--ink, #1d1d1f)" letter-spacing="-0.2">modelin takılacağı en çok orta katlarda</text>
+<text x="10" y="43" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="15" font-weight="600" fill="var(--ink, #1d1d1f)" letter-spacing="-0.2">belli oluyor</text>
+<text x="10" y="63" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">cevabın ilk 512 token'ına bakıp takılacağını</text>
+<text x="10" y="79" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">tahmin etme doğruluğu</text>
+<line x1="34" x2="350" y1="306.0" y2="306.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="28" y="310.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">%50</text>
+<line x1="34" x2="350" y1="242.7" y2="242.7" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="28" y="246.7" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">%60</text>
+<line x1="34" x2="350" y1="179.3" y2="179.3" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="28" y="183.3" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">%70</text>
+<line x1="34" x2="350" y1="116.0" y2="116.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="28" y="120.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">%80</text>
+<text x="34.0" y="325" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">0</text>
+<text x="86.7" y="325" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">4</text>
+<text x="139.3" y="325" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">8</text>
+<text x="192.0" y="325" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">12</text>
+<text x="244.7" y="325" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">16</text>
+<text x="297.3" y="325" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">20</text>
+<text x="350.0" y="325" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">24</text>
+<text x="192.0" y="344" text-anchor="middle" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">katman</text>
+<line x1="34" x2="350" y1="230.0" y2="230.0" stroke="var(--grey, #6e6e73)" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="350" y="225.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">şans · %62</text>
+<line x1="34" x2="350" y1="192.0" y2="192.0" stroke="var(--grey, #6e6e73)" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="350" y="187.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--grey, #6e6e73)">sadece zorluk · %68</text>
+<polyline points="34.0,268.0 47.2,204.7 60.3,230.0 73.5,192.0 86.7,179.3 99.8,179.3 113.0,166.7 126.2,166.7 139.3,166.7 152.5,154.0 165.7,154.0 178.8,128.7 192.0,141.3 205.2,141.3 218.3,141.3 231.5,154.0 244.7,154.0 257.8,128.7 271.0,141.3 284.2,154.0 297.3,154.0 310.5,154.0 323.7,166.7 336.8,166.7 350.0,166.7" fill="none" stroke="var(--chart-acc, #c2410c)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="40" y="170.3" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--ink, #1d1d1f)">model içi</text>
+<circle cx="34.0" cy="268.0" r="9" fill="transparent"><title>katman 0: %56</title></circle>
+<circle cx="47.2" cy="204.7" r="9" fill="transparent"><title>katman 1: %66</title></circle>
+<circle cx="60.3" cy="230.0" r="9" fill="transparent"><title>katman 2: %62</title></circle>
+<circle cx="73.5" cy="192.0" r="9" fill="transparent"><title>katman 3: %68</title></circle>
+<circle cx="86.7" cy="179.3" r="9" fill="transparent"><title>katman 4: %70</title></circle>
+<circle cx="99.8" cy="179.3" r="9" fill="transparent"><title>katman 5: %70</title></circle>
+<circle cx="113.0" cy="166.7" r="9" fill="transparent"><title>katman 6: %72</title></circle>
+<circle cx="126.2" cy="166.7" r="9" fill="transparent"><title>katman 7: %72</title></circle>
+<circle cx="139.3" cy="166.7" r="9" fill="transparent"><title>katman 8: %72</title></circle>
+<circle cx="152.5" cy="154.0" r="9" fill="transparent"><title>katman 9: %74</title></circle>
+<circle cx="165.7" cy="154.0" r="9" fill="transparent"><title>katman 10: %74</title></circle>
+<circle cx="178.8" cy="128.7" r="9" fill="transparent"><title>katman 11: %78</title></circle>
+<circle cx="192.0" cy="141.3" r="9" fill="transparent"><title>katman 12: %76</title></circle>
+<circle cx="205.2" cy="141.3" r="9" fill="transparent"><title>katman 13: %76</title></circle>
+<circle cx="218.3" cy="141.3" r="9" fill="transparent"><title>katman 14: %76</title></circle>
+<circle cx="231.5" cy="154.0" r="9" fill="transparent"><title>katman 15: %74</title></circle>
+<circle cx="244.7" cy="154.0" r="9" fill="transparent"><title>katman 16: %74</title></circle>
+<circle cx="257.8" cy="128.7" r="9" fill="transparent"><title>katman 17: %78</title></circle>
+<circle cx="271.0" cy="141.3" r="9" fill="transparent"><title>katman 18: %76</title></circle>
+<circle cx="284.2" cy="154.0" r="9" fill="transparent"><title>katman 19: %74</title></circle>
+<circle cx="297.3" cy="154.0" r="9" fill="transparent"><title>katman 20: %74</title></circle>
+<circle cx="310.5" cy="154.0" r="9" fill="transparent"><title>katman 21: %74</title></circle>
+<circle cx="323.7" cy="166.7" r="9" fill="transparent"><title>katman 22: %72</title></circle>
+<circle cx="336.8" cy="166.7" r="9" fill="transparent"><title>katman 23: %72</title></circle>
+<circle cx="350.0" cy="166.7" r="9" fill="transparent"><title>katman 24: %72</title></circle>
+<circle cx="178.8" cy="128.7" r="4" fill="var(--chart-acc, #c2410c)" stroke="var(--bg, #fafaf8)" stroke-width="2"/>
+<text x="178.8" y="118.7" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--ink, #1d1d1f)">%78</text>
+<circle cx="257.8" cy="128.7" r="4" fill="var(--chart-acc, #c2410c)" stroke="var(--bg, #fafaf8)" stroke-width="2"/>
+<text x="257.8" y="118.7" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="12" fill="var(--ink, #1d1d1f)">%78</text>
+</svg>

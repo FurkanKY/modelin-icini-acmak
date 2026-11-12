@@ -18,7 +18,7 @@ export const meta = {
 
 [ilk yazıda](/tr/yazilar/model-bilmedigi-icin-degil-kararsiz-kaldigi-icin-kaybediyor/) 50 soruya bakmıştım. modelin 11. katındaki sayılara bakarak bir cevabın takılıp takılmayacağını %78 doğrulukla tahmin edebiliyordum. 50 soruda bu fark topu topu 5 soru ediyordu, o yüzden buna bir ipucu demiştim.
 
-bu yazıda iki şey yaptım. önce soru sayısını 200'e çıkarıp ipucunun gerçek olup olmadığına baktım. sonra o yönü modelin içinde kısıp açtım ve modelin davranışı değişiyor mu, onu ölçtüm.
+bu yazıda iki şey yaptım. önce soru sayısını 200'e çıkarıp ipucunun gerçek olup olmadığına baktım. sonra da o yönü modelin içinde kısıp açtım ve modelin davranışı değişiyor mu onu ölçtüm.
 
 ## 200 soru
 
@@ -32,13 +32,13 @@ ayarlar aynı. greedy decoding, düşünme modu kapalı, 4096 token sınırı.[^
 
 takılan cevapların çoğunda model yine bir şüpheye düşüyor ve aynı şüphenin etrafında farklı cümlelerle dönüyor.
 
-en sevdiğim örnek 5. soru oldu. bir altıgen altı eşkenar üçgene bölünüyor, üçgenin çevresi 21 inç, altıgenin çevresi soruluyor. cevap 42. model önce 84 buluyor, sonra 42'ye geçiyor, sonra yine 84'e dönüyor. 435. kelime civarında 42'de karar kılıyor ve sonraki 2000 kelime boyunca 42'yi kontrol etmeye devam ediyor. en son şunu yazdığı anda yeri bitiyor:
+en sevdiğim örnek 5. soru oldu. bir altıgen altı eşkenar üçgene bölünüyor. üçgenin çevresi 21 inç, altıgenin çevresi soruluyor. cevap 42. model önce 84 buluyor, sonra 42'ye geçiyor, sonra yine 84'e dönüyor. 435. kelime civarında 42'de karar kılıyor ve sonraki 2000 kelime boyunca 42'yi kontrol etmeye devam ediyor. en son şunu yazdığı anda yeri bitiyor:
 
 > Perimeter of hexagon = $6 \times 7 = 42$.
 >
 > Final check.
 
-cevap metnin içinde duruyor ama model "bitti" demiyor. 200 cevapta böyle 3 tane var.
+cevap metnin içinde duruyor ama model "bitti" demiyor. 200 cevapta bu tarz 3 tane var.
 
 ## ipucu gerçek mi
 
@@ -48,11 +48,11 @@ ilk yazıdaki yöntemin aynısını 200 cevaba uyguladım. her cevabın ilk 512 
 - sadece sorunun zorluğuna bakmak: %68
 - 15. kattaki sayılara bakmak: **%79.5**
 
-5. ile 20. kat arasındaki her kat %76 ile %80 arasında, yani tek bir şanslı kat yok. mit'nin en iyi düzenlemesi de 15. ve 19. kattaymış.
+5. ile 20. kat arasındaki her kat %76 ile %80 arasında. yani tek bir şanslı kat yok. mit'nin 50 turluk düzenlemesi de 15. ve 19. kattaymış.[^mit]
 
-ilk yazıda 25 kat içinden en iyisini seçince sonucun şiştiğini söylemiştim. bunu kontrol etmek için pilotta seçtiğim 11. katı modelin daha önce hiç görmediği 150 soruda denedim. %75 çıktı, şans %64. ipucu biraz zayıfladı ama yerinde duruyor.
+ilk yazıda 25 kat içinden en iyisini seçince sonucun şiştiğini söylemiştim. bunu kontrol etmek için pilotta seçtiğim 11. katı, modelin daha önce hiç görmediği 150 soruda denedim. %75 çıktı, şans %64. ipucu biraz zayıfladı ama hala yerinde.
 
-asıl merak ettiğim şey bu yönün sadece "soru zor" deyip demediğiydi. zor sorularda model zaten daha çok takılıyor. ikisi arasındaki korelasyon 0.54, yani ilişkili ama aynı şey değiller. aynı 200 soruda yönün doğru bilip zorluğun yanıldığı 44 soru var, tersi 21.[^test] aynı zorluk seviyesindeki sorulara tek tek bakınca da yön şansın üstünde kalıyor. en zor seviyede şans %58 iken yön %84 tahmin ediyor. 4. seviyede ise hiçbir işe yaramıyor, sebebini hâlâ bilmiyorum.
+asıl merak ettiğim şey bu yönün sadece "soru zor" deyip demediğiydi. zor sorularda model zaten daha çok takılıyor. ikisi arasındaki korelasyon 0.54, yani ilişkili ama aynı şey değiller. aynı 200 soruda yönün doğru bilip zorluğun yanıldığı 44 soru var, tersi 21.[^test] aynı zorluk seviyesindeki sorulara tek tek bakınca da yön, şansın üstünde kalıyor. en zor seviyede şans %58 iken yön %84 tahmin ediyor. 4. seviyede ise hiçbir işe yaramıyor, sebebini hala bilmiyorum.
 
 200 cevabı bu yöndeki skorlarına göre sıralayıp 40'arlık beş gruba böldüm. skoru en düşük grupta 40 cevaptan 1'i takılıyor, en yüksek grupta 36'sı.
 
@@ -64,13 +64,13 @@ asıl merak ettiğim şey bu yönün sadece "soru zor" deyip demediğiydi. zor s
 
 ## düğmeyi çevirmek
 
-buraya kadar elimdeki şey bir tahmin. ateş hastalığı haber verir ama ateşi düşürmek hastalığı geçirmez. bu yönün takılmaya sahiden sebep olup olmadığını anlamanın yolu onu modelin içinde değiştirip ne olduğuna bakmak.
+buraya kadar elimdeki şey bir tahmin. ateşinin çıkması hastalığı haber verir ama ateşi düşürmek hastalığı geçirmez. bu yönün takılmaya sahiden sebep olup olmadığını anlamanın yolu onu modelin içinde değiştirip ne olduğuna bakmak.
 
-yönü 0-199. sorulardan bulmuştum. denemeleri modelin hiç görmediği 200-299. sorularda yaptım ve dört şey denedim:
+yönü 0-199. sorulardan bulmuştum. denemeleri ise modelin hiç görmediği 200-299. sorularda yaptım ve dört şey denedim:
 
-- **silmek:** modelin bu yöne yazan ağırlıklarından o payı çıkardım, yani model bu yönde artık hiçbir şey söyleyemiyor
+- **silmek:** modelin bu yöne yazan ağırlıklarından o payı çıkardım. yani model bu yönde artık hiçbir şey söyleyemiyor
 - **ters çevirmek:** aynı işlemi 1.5 katıyla yaptım, mit de bu katsayıyı kullanmış
-- **hafif itmek:** ağırlıklara dokunmadan 15. katın çıkışını her token'da biraz "biten" tarafa kaydırdım
+- **hafif itmek:** ağırlıklara dokunmadan 15. katın çıkışını her token'da biraz daha "biten" tarafa kaydırdım
 - **güçlü itmek:** aynısını iki kat kuvvetle yaptım
 
 | deneme | takılan | doğru | ort. token |
@@ -83,7 +83,7 @@ yönü 0-199. sorulardan bulmuştum. denemeleri modelin hiç görmediği 200-299
 
 yön silinince takılan cevap 34'ten 72'ye çıkıyor, ters çevrilince 100 cevabın 93'ü bitmiyor. öbür tarafa itince 21'e iniyor.
 
-burada akla gelen ilk itiraz şu: modelin 15 katından herhangi bir yönü bu kadar sert silmek ya da itmek onu genel olarak bozabilir. belki takılma artışı yönle değil, modeli hırpalamakla ilgili. bunu görmek için aynı iki işlemi rastgele seçilmiş iki yönle tekrarladım.[^rastgele]
+burada akla gelen ilk itiraz şu: modelin 15 katından herhangi bir yönü bu kadar sert silmek ya da itmek onu genel olarak bozabilir. belki takılma hangi yönle oynarsam oynayayım modeli hırpaladığım için artıyor. bunu görmek için aynı iki işlemi rastgele seçilmiş iki yönle tekrarladım.[^rastgele]
 
 | deneme | takılan | doğru |
 |---|---|---|
@@ -93,11 +93,11 @@ burada akla gelen ilk itiraz şu: modelin 15 katından herhangi bir yönü bu ka
 | rastgele yön 1, güçlü it | 41 | 37 |
 | rastgele yön 2, güçlü it | 38 | 34 |
 
-rastgele yönler takılmayı 32 ile 41 arasında bırakıyor. bitirme yönü ise aynı işlemlerle 93'e çıkarıyor ya da 21'e indiriyor. yani etki yönün kendisinden geliyor ve model bitirip bitirmeyeceğine karar verirken bu yönü gerçekten kullanıyor.
+rastgele yönler takılmayı 32 ile 41 arasında bırakıyor. bitirme yönü ise aynı işlemlerle 93'e çıkarıyor ya da 21'e indiriyor. etki yönün kendisinden geliyor ve model, bitirip bitirmeyeceğine karar verirken bu yönü gerçekten kullanıyor.
 
-rastgele yönlerin bir yan etkisi de var. doğru sayısı 4 ile 7 arasında düşüyor. yani modelin içini kurcalamanın genel bir bedeli var ve aşağıda göreceğimiz doğru sayısı düşüşünün bir kısmı bu bedelden geliyor.
+rastgele yönlerin bir yan etkisi de var. doğru sayısı 4 ile 7 arasında düşüyor. modelin içini kurcalamanın genel bir bedeli var ve aşağıda göreceğimiz doğru sayısı düşüşünün bir kısmı bu bedelden geliyor.
 
-ters çevrilmiş modelin cevapları ilginç. 18 cevapta model doğru sayıyı yazıyor ama bir türlü bitiremiyor. ilk yazıdaki "model biliyor ama karar veremiyor" cümlesinin elle üretilmiş hali gibi.
+ters çevrilmiş modelin cevapları ilginç. 18 cevapta model doğru sayıyı yazıyor ama bir türlü bitiremiyor. ilk yazıdaki "model biliyor ama karar veremiyor" cümlesinin kanıtı gibi.
 
 ## doğru cevap ise artmadı
 
@@ -110,13 +110,13 @@ beklediğim şey itince takılan cevapların bitmesi ve bir kısmının doğru �
 | düzenlenmemiş | 29 | 47 |
 | hafif it | 27 | 42 |
 
-burada hafif itme takılmayı neredeyse hiç değiştirmedi. 12 cevap kurtuldu ama 10 biten cevap bu sefer takıldı. doğru sayısı yine düştü. iki 100'lük grubu birlikte sayınca hafif itme 28 cevabı kurtarıp 17 cevabı takılmaya itiyor, bu da şanstan ayırt edilemiyor (p ≈ 0.14). yani hafif itmenin etkisi ilk 100 soruda gördüğümden daha zayıf. güçlü itme ve ters çevirme ise açık ara etkili. doğru cevap sayısı ise hiçbir denemede artmadı.
+burada hafif itme takılmayı neredeyse hiç değiştirmedi. 12 cevap kurtuldu ama 10 biten cevap bu sefer takıldı. doğru sayısı yine düştü. iki 100'lük grubu birlikte sayınca hafif itme 28 cevabı kurtarıp 17 cevabı takılmaya itiyor ve bu da şanstan ayırt edilemiyor (p ≈ 0.14). hafif itmenin etkisi ilk 100 soruda gördüğümden daha zayıf. güçlü itme ve ters çevirme ise açık ara etkili. doğru cevap sayısı hiçbir denemede artmadı.
 
-aslında bu mantıklı. modeli bitirmeye zorlayınca kararsız kaldığı cevabı da yazıp geçiyor. bazen kararsızlığında haklı, cevap gerçekten yanlış. düğme modele "bitir" diyor ama ona doğru cevabın ne olduğunu söylemiyor.
+aslında düşününce mantıklı. modeli bitirmeye zorlayınca kararsız kaldığı cevabı da yazıp geçiyor. bazen kararsızlığında haklı, cevap gerçekten yanlış. düğme modele "bitir" diyor ama ona doğru cevabın ne olduğunu söylemiyor.
 
-bu sonuç ilk yazının başlığını da biraz düzeltiyor. "model biliyor ama karar veremiyor" demiştim. 200 soruda bunun sadece bir kısmı doğru çıktı. bazı cevaplarda model gerçekten biliyor ve bitiremiyor, altıgen sorusu gibi. çoğunda ise kararsızlık bir işaret. model emin olmadığı için dönüyor ve çoğu zaman emin olmamakta haklı.
+bu sonuç ilk yazının başlığını da biraz düzeltiyor. "model biliyor ama karar veremiyor" demiştim. 200 soruda bunun sadece bir kısmı doğru çıktı. bazı cevaplarda model gerçekten biliyor ve bitiremiyor, altıgen sorusu gibi. çoğunda ise kararsızlık bir işaret. model emin olmadığı için dönüp duruyor ve çoğu zaman emin olmamakta haklı.
 
-barış bayburt da [kumru'da](https://blog.bayburt.lu/editing-kumru-weights) benzer bir yere varmıştı. astra kumru'nun döngülerini kaldırmış ama türkçe matematik skoru yerinden oynamamış. o başka bir model ve başka bir yöntem kullandı, ben elle tek bir yönü ittim. ikimiz de aynı yere çıktık. döngüyü kırmak tek başına doğru cevap getirmiyor.
+barış bayburt da [kumru'da](https://blog.bayburt.lu/editing-kumru-weights) benzer bir yere varmıştı. astra kumru'nun döngülerini kaldırmış ama türkçe matematik skoru yerinden oynamamış. o başka bir model ve başka bir yöntem kullandı, bense elle tek bir yönü ittim. ikimiz de aynı yere çıktık. döngüyü kırmak tek başına doğru cevap getirmiyor.
 
 ## peki mit nasıl %48'e çıktı
 
@@ -127,6 +127,8 @@ birincisi benim bulduğum yön mit'ninkiyle aynı olmayabilir. ben "takılacak m
 ikincisi düşünme modu. mit modeli düşünme modu açık çalıştırmış ve cevapların %93'ü sınıra dayanıyormuş. benim ayarlarımda bu oran %34. o kadar takılan bir modelde döngüyü kırmak büyük kazanç getirebilir. bende ise zaten bitirebilen bir modeli daha çabuk bitirmeye itmiş oluyorum.
 
 kodlar ve ham cevaplar [github'da](https://github.com/FurkanKY/modelin-icini-acmak).
+
+[^mit]: mit'nin iki düzenlemesi [deney notlarında](https://github.com/RikiyaT/lm_understand-logs/blob/main/exp8_math/README.md) anlatılıyor. 10 turluk olan, 8-22. katlarda dikkat ve mlp çıkışlarından bir döngü yönünü 1.5 katsayıyla siliyor. 50 turluk olan aynı yönü sadece 15. ve 19. katların mlp'sinde, o yönü en çok yazan 64 sütundan siliyor. düşünme modunda cevapların %93'ünün sınıra dayandığı da aynı notlarda.
 
 [^surum]: ilk 50 soru bu sefer 18 takılan ve 23 doğru çıktı, ilk yazıda 19 ve 20'ydi. arada colab'daki transformers sürümü değişmişti. greedy decoding'de bile kütüphane sürümü bu kadar fark yaratabiliyor.
 

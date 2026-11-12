@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 368" width="360" height="368" role="img" aria-label="içi takılanlara benzeyen cevaplar gerçekten takılıyor">
+<rect width="360" height="368" fill="var(--bg, #fafaf8)"/>
+<text x="10" y="24" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="15" font-weight="600" fill="var(--ink, #1d1d1f)" letter-spacing="-0.2">içi takılanlara benzeyen cevaplar</text>
+<text x="10" y="43" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="15" font-weight="600" fill="var(--ink, #1d1d1f)" letter-spacing="-0.2">gerçekten takılıyor</text>
+<text x="10" y="63" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">her çubuk 40 cevap, yüksekliği o 40 cevaptan</text>
+<text x="10" y="79" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">kaçının gerçekten takıldığı</text>
+<line x1="34" x2="350" y1="300.0" y2="300.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="28" y="304.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">%0</text>
+<line x1="34" x2="350" y1="255.0" y2="255.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="28" y="259.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">%25</text>
+<line x1="34" x2="350" y1="210.0" y2="210.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="28" y="214.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">%50</text>
+<line x1="34" x2="350" y1="165.0" y2="165.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="28" y="169.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">%75</text>
+<line x1="34" x2="350" y1="120.0" y2="120.0" stroke="var(--hair, rgba(29,29,31,0.10))"/>
+<text x="28" y="124.0" text-anchor="end" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">%100</text>
+<path d="M46.6,300.0 V297.8 Q46.6,295.5 48.9,295.5 H82.3 Q84.6,295.5 84.6,297.8 V300.0 Z" fill="var(--chart-acc, #c2410c)"><title>1. grup: 1 / 40</title></path>
+<text x="65.6" y="288.5" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--ink, #1d1d1f)">1/40</text>
+<text x="65.6" y="317.0" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">1.</text>
+<path d="M109.8,300.0 V286.0 Q109.8,282.0 113.8,282.0 H143.8 Q147.8,282.0 147.8,286.0 V300.0 Z" fill="var(--chart-acc, #c2410c)"><title>2. grup: 4 / 40</title></path>
+<text x="128.8" y="275.0" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--ink, #1d1d1f)">4/40</text>
+<text x="128.8" y="317.0" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">2.</text>
+<path d="M173.0,300.0 V263.5 Q173.0,259.5 177.0,259.5 H207.0 Q211.0,259.5 211.0,263.5 V300.0 Z" fill="var(--chart-acc, #c2410c)"><title>3. grup: 9 / 40</title></path>
+<text x="192.0" y="252.5" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--ink, #1d1d1f)">9/40</text>
+<text x="192.0" y="317.0" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">3.</text>
+<path d="M236.2,300.0 V205.0 Q236.2,201.0 240.2,201.0 H270.2 Q274.2,201.0 274.2,205.0 V300.0 Z" fill="var(--chart-acc, #c2410c)"><title>4. grup: 22 / 40</title></path>
+<text x="255.2" y="194.0" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--ink, #1d1d1f)">22/40</text>
+<text x="255.2" y="317.0" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">4.</text>
+<path d="M299.4,300.0 V142.0 Q299.4,138.0 303.4,138.0 H333.4 Q337.4,138.0 337.4,142.0 V300.0 Z" fill="var(--chart-acc, #c2410c)"><title>5. grup: 36 / 40</title></path>
+<text x="318.4" y="131.0" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--ink, #1d1d1f)">36/40</text>
+<text x="318.4" y="317.0" text-anchor="middle" font-family="'Geist Mono', ui-monospace, 'SF Mono', Consolas, monospace" font-size="11" fill="var(--grey, #6e6e73)">5.</text>
+<text x="34" y="340" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">ilk paragrafta içi</text>
+<text x="34" y="356" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">bitenlere benzeyenler</text>
+<text x="350" y="340" text-anchor="end" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">takılanlara</text>
+<text x="350" y="356" text-anchor="end" font-family="Geist, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="var(--grey, #6e6e73)">benzeyenler</text>
+</svg>
