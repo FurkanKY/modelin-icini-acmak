@@ -174,7 +174,7 @@ kodlar ve ham cevaplar [github'da](https://github.com/FurkanKY/modelin-icini-acm
 
 [^ornek]: kod ayarı temperature 0.6, top_p 0.95, top_k 20. metin ayarı temperature 1.0, top_p 0.95, top_k 20 ve sonsuz tekrarları azaltmak için presence_penalty 1.5. ikisi de tohum 0, tek bir örnekleme. kullandığım kütüphanede (transformers) presence_penalty yok, oradaki repetition_penalty başka türlü çalışıyor. o yüzden cezayı kendim yazdım. vllm'deki sırayla önce ceza, sonra sıcaklık, top_k ve top_p uygulanıyor. ceza sadece modelin bu cevapta yazdığı token'lara veriliyor, sorunun kendisine değil. birkaç tohumla tekrar etmek sayıları birkaç soru oynatabilir ama 100'de 99-100 sınıra dayanma sonucunu değiştirmesi zor.
 
-[^ayrim]: 5. yazıda aynı kesmeyi token bazında tekrarladım (34 doğru) ve kesme anındaki düşünceyi ayrıca puanladım. 14 soruda doğru cevap düşüncenin içinde zaten yazılıydı.
+[^ayrim]: aynı kesmeyi kelime yerine token bazında da tekrarladım (34 doğru) ve kesme anındaki düşünceyi ayrıca puanladım. 14 soruda doğru cevap düşüncenin içinde zaten yazılıydı.
 
 [^zorla]: literatürde buna "budget forcing" deniyor, [s1 makalesinden](https://arxiv.org/abs/2501.19393) geliyor. kesilen cevaba `</think>` ekleyip greedy ile en fazla 1024 token daha yazdırdım ve sadece bu yeni kısmı puanladım. 1024 token'da cevapların 40'ı bitti, geri kalanında model son cevabı yazarken yer bitti. yani 35 bir alt sınır. tabanla karşılaştırınca 25 soru yanlıştan doğruya döndü, ters yönde hiçbiri (mcnemar p < 0.0001). döngüye girmeyen 5 cevapta iki koşul aynı.
 
