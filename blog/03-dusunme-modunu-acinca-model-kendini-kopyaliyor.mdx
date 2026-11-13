@@ -1,53 +1,51 @@
 export const meta = {
   title: "düşünme modunu açınca model kendini kopyalıyor",
-  date: "2026-11-11",
-  summary: "mit'nin modeli neden benimkinden çok daha fazla takılıyordu? düşünme modunu açınca 100 cevabın 95'i aynı satırları kopyalayan bir döngüye girdi. döngüyü dışarıdan kesince doğru cevap 10'dan 35'e çıktı. modelin içinde onu kıran bir yön ise bulamadım.",
+  date: "2026-11-13",
+  summary: "mit'nin modeli neden benimkinden çok daha fazla takılıyordu? düşünme modunu açınca 100 cevabın 95'i aynı satırları kopyalayan bir döngüye girdi. döngüyü dışarıdan kesince doğru cevap sayısı 10'dan 35'e çıktı. modelin içinde onu kıran bir yön ise bulamadım.",
   kind: "experiment",
   facts: [
     { k: "model", v: "qwen3.5-0.8b", href: "https://huggingface.co/Qwen/Qwen3.5-0.8B" },
     { k: "veri", v: "math-500 · 100 soru", href: "https://huggingface.co/datasets/HuggingFaceH4/MATH-500" },
-    { k: "ayar", v: "greedy · 4096 token · düşünme açık/kapalı" },
+    { k: "ayar", v: "greedy ve örnekleme · 4096 token · düşünme açık/kapalı" },
     { k: "donanım", v: "colab t4" },
     { k: "kod", v: "github", href: "https://github.com/FurkanKY/modelin-icini-acmak" },
   ],
   series: "modelin içini açmak",
-  seriesTotal: 5,
   status: "devam ediyor",
-  draft: true,
 };
 
-[önceki yazıda](/tr/yazilar/modelin-bir-bitirme-dugmesi-var/) modelin içinde bir "bitirme" yönü bulmuştum. o yönü itince model daha az takılıyordu ama doğru cevap sayısı artmıyordu. mit ise aynı modelin skorunu %7.9'dan %48.1'e çıkarmıştı. yazıyı iki şüpheyle bitirmiştim, bu yazıda ikisini de denedim.
+[önceki yazıda](/tr/yazilar/modelin-bir-bitirme-dugmesi-var/) modelin içinde bir "bitirme" yönü bulmuştum. o yönü itince model daha az takılıyordu ama doğru cevap sayısı yerinden oynamıyordu. mit ise aynı modelin skorunu %7.9'dan %48.1'e çıkarmıştı. yazıyı iki şüpheyle bitirmiştim. bu yazıda ikisini de tek tek denedim.
 
-birinci şüphem bulduğum yönün mit'ninkiyle aynı şey olmayabileceğiydi. ben "bu cevap takılacak mı" sorusuna bakan bir yön bulmuştum. mit ise modelin kendini tekrar ettiği anlara bakmış olabilirdi. ikinci şüphem düşünme moduydu. mit modeli düşünme modu açık çalıştırmış, ben kapalı.
+ilk şüphem bulduğum yönün mit'ninkiyle aynı şey olmayabileceğiydi. benim yönüm "bu cevap takılacak mı" sorusuna bakıyordu. mit ise modelin kendini tekrar ettiği anlara bakmış olabilirdi. ikinci şüphem düşünme moduydu. mit modeli düşünme modu açık çalıştırmış, ben ise baştan beri kapalı tutuyordum.
 
 ## tekrar yönü
 
-önce mit'nin yönüne daha yakın olabilecek bir yön çıkardım. 2. aşamadaki 200 cevabı token token taradım. bir token'la biten 8 token'lık parça cevapta daha önce geçmişse o anı "tekrar", geçmemişse "yeni" saydım. 126.111 tekrar ve 185.213 yeni an çıktı. modelin içinde bu iki grubun ortalaması arasındaki fark tekrar yönü oldu.[^konum]
+önce mit'ninkine daha yakın olabilecek bir yön çıkardım. önceki yazıdaki 200 cevabı token token taradım. her token'da, o token'la biten 8 token'lık parça cevabın daha önceki bir yerinde geçmiş mi diye baktım. geçmişse o anı "tekrar", geçmemişse "yeni" saydım. 126.111 tekrar ve 185.213 yeni an çıktı. bu iki grubun modelin içindeki ortalamaları arasındaki fark da tekrar yönü oldu.[^konum]
 
-bu yön bitirme yönüne neredeyse dik çıktı, aralarındaki kosinüs benzerliği 0.14. yani ikisi modelin içinde farklı şeyler. bu beni biraz umutlandırdı açıkçası. sonra mit'nin yaptığına en yakın üç düzenlemeyi denedim, yine modelin hiç görmediği 100 soruda.
+bu yön bitirme yönüne neredeyse dik çıktı. aralarındaki kosinüs benzerliği 0.14 (1 olsa ikisi aynı yön olurdu, 0 olsa birbirinden tamamen bağımsız). yani model bu ikisini içinde ayrı ayrı tutuyor. açıkçası bu beni biraz umutlandırdı. sonra mit'nin yaptığına en yakın üç düzenlemeyi denedim, yine modelin hiç görmediği 100 soruda.
 
 | deneme | takılan | doğru | ort. token |
-|---|---|---|---|
+|---|--:|--:|--:|
 | düzenlenmemiş | 33 | 41 | 1945 |
 | tekrar yönünü sil | 33 | 38 | 1966 |
 | 1.5 katıyla sil (mit'nin formülü) | 35 | 36 | 1912 |
 | sadece en çok yazan 64 sütundan sil | 30 | 39 | 1948 |
 
-hiçbiri modeli bozmuyor ama hiçbiri düzeltmiyor da. takılan sayısı 30 ile 35 arasında oynuyor, doğru sayısı 36 ile 41 arasında. cevaplara tek tek bakınca da tablo aynı. tekrar yönünü silince 13 takılan cevap bitiyor ama 13 biten cevap da bu sefer takılıyor. 100 soruda bu farklar gürültüden ayırt edilemiyor.[^tekrar]
+hiçbiri modeli bozmuyor ama hiçbiri düzeltmiyor da. takılan sayısı 30 ile 35, doğru sayısı 36 ile 41 arasında gidip geliyor. cevaplara tek tek bakınca da tablo değişmiyor. tekrar yönünü silince 13 takılan cevap bitiyor ama bu sefer 13 biten cevap takılıyor. 100 soruda bu kadarlık farkları gürültüden ayırmak mümkün değil.[^tekrar]
 
 ## düşünme modu
 
-asıl merak ettiğim ikinci şüpheydi. aynı 100 soruyu düşünme modu açık sordum. ayarların gerisi aynı.
+asıl merak ettiğim ikinci şüpheydi. düşünme modunda model cevaba geçmeden önce `<think>` etiketiyle açılan bir blokta kendi kendine düşünüyor ve kontrol ediyor. sonra bloğu `</think>` ile kapatıp cevabı yazıyor. aynı 100 soruyu bu mod açıkken sordum, ayarların geri kalanına dokunmadım.
 
-sonuç beklediğimden de uçtaydı. 100 cevabın 100'ü 4096 token sınırına dayandı ve sadece 10'u doğru çıktı. daha önemlisi cevapların neye benzediğiydi. düşünme modu kapalıyken takılan cevaplar bir şüphenin etrafında farklı cümlelerle dönüyordu. düşünme modu açıkken model aynı satırları birebir kopyalıyor.
+sonuç beklediğimden de uçtaydı. 100 cevabın 100'ü 4096 token sınırına dayandı ve sadece 10'u doğru çıktı. beni asıl şaşırtan cevapların neye benzediği oldu. düşünme modu kapalıyken takılan cevaplar bir şüphenin etrafında farklı cümlelerle dönüyordu. düşünme modu açıkken model aynı satırları kelimesi kelimesine kopyalıyor.
 
-ilk soru güzel bir örnek. 4 dap 7 yap ediyor, 5 yap 3 bap ediyor, 42 bap kaç dap eder? cevap 40. model 40'ı kendi düşüncesinin ortasında buluyor:
+en sevdiğim örnek ilk soru. 4 dap 7 yap ediyor, 5 yap 3 bap ediyor, 42 bap kaç dap eder? cevap 40. model 40'ı daha düşüncesinin ortasında buluyor:
 
 > $42 / 1.05 = 40 / 1 = 40$.
 >
 > Let's re-verify the calculation.
 
-sonra kontrol etmeye başlıyor ve şu satırları sınır gelene kadar tekrar tekrar yazıyor:
+sonra kontrole başlıyor ve şu üç satırı sınır gelene kadar tekrar tekrar yazıyor:
 
 > Wait, $4 \text{ daps} = 7 \text{ yaps}$.
 >
@@ -55,127 +53,127 @@ sonra kontrol etmeye başlıyor ve şu satırları sınır gelene kadar tekrar t
 >
 > So, 1 dap = $4.2 / 4 = 1.05$ baps.
 
-bunu sayıya dökmek için her cevapta 200 kelimelik bir pencereyi kaydırdım. pencerenin en az %90'ı daha önce geçmiş parçalardan oluşuyorsa cevabın orada döngüye girdiğini söyledim.
+bunu sayıya dökmek için her cevabın üstünde 200 kelimelik bir pencere kaydırdım. pencerenin en az %90'ı cevapta daha önce geçmiş parçalardan oluşuyorsa cevabın orada birebir döngüye girdiğini kabul ettim.
 
 | ayar | sınıra dayanan | birebir döngüye giren | doğru |
-|---|---|---|---|
+|---|--:|--:|--:|
 | düşünme kapalı | 33 | 12 | 41 |
 | düşünme açık | 100 | **95** | 10 |
 
-düşünme modunda 100 cevabın 95'i birebir döngüye giriyor, döngü de tipik olarak 520. kelime civarında başlıyor. mit'nin "cevapların %93'ü sınıra dayanıyor" dediği şey büyük ihtimalle bu. bende bu oranın %33 olmasının sebebi düşünme modunu kapalı tutmammış.[^sinir]
+düşünme modunda 100 cevabın 95'i birebir döngüye giriyor ve döngü genelde 520. kelime civarında başlıyor. mit'nin "cevapların %93'ü sınıra dayanıyor" dediği şey büyük ihtimalle bu. bende bu oranın %33 çıkmasının sebebi düşünme modunu kapalı tutmammış.[^sinir]
 
-bu mit'nin büyük kazancını da açıklayabilir. düşünme modunda model çoğu soruda takılıyor ve bazılarında cevabı bulduktan sonra takılıyor. bu döngü kırılırsa skor çok yükselebilir. düşünme kapalıyken ise model zaten çoğu soruyu bitiriyor, kırılacak döngü az. bunu yazının sonunda ölçtüm.
+bu durum mit'nin büyük kazancını da açıklayabilir. düşünme modunda model neredeyse her soruda takılıyor, bazılarında da cevabı bulduktan sonra takılıyor. döngü kırılırsa skor baya yükselebilir. düşünme kapalıyken model zaten çoğu soruyu bitirdiği için kırılacak döngü de az. bunu yazının sonunda ölçtüm.
 
 ## yönler bu döngüyü kırıyor mu
 
 madem döngü burada, iki yönümü de düşünme modunda denedim.
 
 | deneme (düşünme açık) | birebir döngüye giren | döngünün başladığı kelime | doğru |
-|---|---|---|---|
+|---|--:|--:|--:|
 | düzenlenmemiş | 95 | 524 | 10 |
 | bitirme yönüne hafif it | 91 | 574 | 11 |
 | tekrar yönünü 1.5 katıyla sil | 95 | 361 | 11 |
 
-hiçbiri işe yaramadı. bitirme yönüne itmek döngüyü biraz geciktiriyor ama döngüye giren cevap sayısı sadece 95'ten 91'e iniyor. döngüye girmeyen 9 cevaptan da sadece 1'i bitiyor. tekrar yönünü silmek ise döngüyü daha erken başlatıyor. beklediğimin tam tersi bu.
+hiçbiri işe yaramadı. bitirme yönüne itmek döngüyü biraz geciktiriyor ama döngüye giren cevap sayısı sadece 95'ten 91'e iniyor. döngüye girmeyen 9 cevabın da yalnızca 1'i bitiyor. tekrar yönünü silmek ise döngüyü daha erken başlatıyor, yani beklediğimin tam tersini yapıyor.
 
-açıkçası biraz hayal kırıklığı oldu. ilk tahminim şuydu. iki yönü de düşünme modu kapalı cevaplardan çıkarmıştım. düşünme modundaki döngü modelin kendi düşünce bloğunun içinde oluyor ve orada modelin içi farklı bir halde olabilir.
+açıkçası biraz hayal kırıklığı oldu. ilk aklıma gelen şuydu. iki yönü de düşünme modu kapalı cevaplardan çıkarmıştım. düşünme modundaki döngü ise modelin kendi düşünce bloğunun içinde oluyor ve modelin içi orada başka bir halde olabilir.
 
-bunu test etmek için tekrar yönünü baştan, düşünme modu açık cevaplardan çıkardım. test sorularıyla karışmasın diye 0-99. soruları düşünme modunda çözdürdüm ve aynı yöntemi uyguladım.[^yeniyon] bu cevaplarda 297.038 tekrar anına karşılık sadece 61.362 yeni an var. düşünme metninin beşte dördü daha önce yazılmış bir şeyin tekrarı.
+bunu denemek için tekrar yönünü bu sefer düşünme modu açık cevaplardan baştan çıkardım. test sorularına karışmasın diye 0-99. soruları düşünme modunda çözdürdüm ve aynı yöntemi uyguladım.[^yeniyon] bu cevaplarda 297.038 tekrar anına karşılık sadece 61.362 yeni an var. yani düşünme metninin beşte dördü daha önce yazılmış bir şeyin tekrarı.
 
 | deneme (düşünme açık) | birebir döngüye giren | döngünün başladığı kelime | doğru |
-|---|---|---|---|
+|---|--:|--:|--:|
 | düzenlenmemiş | 95 | 524 | 10 |
 | yeni tekrar yönünü sil | 98 | 451 | 14 |
 | 1.5 katıyla sil | 99 | 398 | 6 |
 
-bu da işe yaramadı. döngüye giren cevap azalmıyor, artıyor, döngü de daha erken başlıyor. 1.5 katıyla silince doğru sayısı 6'ya düşüyor. 14 doğru ilk bakışta bir kazanç gibi görünüyor ama 100 soruda 10 ile 14 arasındaki fark gürültü sınırında, üstelik cevapların hepsi yine sınıra dayanıyor.
+bu da işe yaramadı. döngüye giren cevap sayısı azalacağına artıyor ve döngü daha erken başlıyor. 1.5 katıyla silince doğru sayısı 6'ya düşüyor. 14 doğru ilk bakışta bir kazanç gibi duruyor ama 100 soruda 10 ile 14 arasındaki fark gürültü sınırında. üstelik cevapların hepsi yine sınıra dayanıyor.
 
-iki ayrı tekrar yönünde de aynı şeyin olması dikkatimi çekti. ikisinde de yönü silmek döngüyü kırmak yerine erkene çekiyor. bir tahminim var ama test etmedim. bu yön "tekrar ediyorum" bilgisini taşıyor olabilir ve model bu bilgiyi tekrarı frenlemek için kullanıyor olabilir. silince fren de gidiyor.
+iki ayrı tekrar yönünde aynı şeyin olması dikkatimi çekti. ikisinde de yönü silmek döngüyü kırmak yerine erkene çekiyor. bir tahminim var ama henüz test etmedim. bu yön "kendimi tekrar ediyorum" bilgisini taşıyor ve model bu bilgiyi tekrarı frenlemek için kullanıyor olabilir. yönü silince fren de gidiyor.
 
 ## döngüyü dışarıdan kırmak
 
-yönler işe yaramadıysa döngüyü daha kaba bir yolla kırmayı denedim. çözme sırasında daha önce yazılmış token'lara küçük bir ceza verdim (repetition penalty 1.1). bu modelin içine dokunmuyor, sadece aynı kelimeleri tekrar seçmesini zorlaştırıyor.
+yönler işe yaramayınca döngüyü daha kaba bir yolla kırmayı denedim. model yazarken daha önce yazdığı token'lara küçük bir ceza verdim (repetition penalty 1.1). bu modelin içine dokunmuyor, sadece aynı kelimeleri yeniden seçmesini zorlaştırıyor.
 
 | ayar (düşünme açık) | birebir döngüye giren | döngünün başladığı kelime | doğru |
-|---|---|---|---|
+|---|--:|--:|--:|
 | ceza yok | 95 | 524 | 10 |
 | tekrar cezası 1.1 | 62 | 1083 | 16 |
 
-ceza işe yarıyor gibi. birebir döngü 95'ten 62'ye iniyor, başladığı yer iki katına çıkıyor, doğru sayısı 10'dan 16'ya. ama 100 cevabın 97'si yine sınıra dayanıyor ve düşünme bloğunu sadece 3'ü kapatabiliyor. cevaplara bakınca sebebi görünüyor. model artık aynı satırları kopyalayamadığı için aynı şüpheyi başka kelimelerle yazıyor. ilk soruda 40'ı yine buluyor, sonra şunu soruyor:
+ceza işe yarıyor gibi. birebir döngü 95'ten 62'ye iniyor, başladığı yer iki katına çıkıyor, doğru sayısı da 10'dan 16'ya çıkıyor. buna rağmen 100 cevabın 97'si yine sınıra dayanıyor ve düşünme bloğunu sadece 3'ü kapatabiliyor. sebebi cevaplarda açıkça görünüyor. model aynı satırları artık kopyalayamadığı için aynı şüpheyi başka kelimelerle yazıyor. ilk soruda 40'ı yine buluyor, sonra şunu soruyor:
 
 > Wait, why did I get 40 earlier?
 
-sonra aynı hesabı baştan yapıyor. birebir kopya döngünün sadece görünen yüzü. altta model bir kontrol halkasından çıkamıyor.
+sonra da aynı hesabı baştan yapıyor. birebir kopya bu döngünün sadece dışarıdan görünen kısmı. altta model kontrol etmeyi bir türlü bırakamıyor.
 
 ## daha uzun sınır
 
-bir itiraz daha vardı. mit 32.768 token kullanmıştı, ben 4096. belki model biraz daha yer bulsa döngüden kendiliğinden çıkıyordur. bunu ilk 25 soruda 16.384 token'la denedim, yani dört kat yerle.
+bir itiraz daha vardı. mit 32.768 token kullanmıştı, ben 4096. belki model biraz daha yer bulsa döngüden kendiliğinden çıkar. bunu ilk 25 soruda 16.384 token'la, yani dört kat yerle denedim.
 
-hiçbir şey değişmedi. 25 cevabın hiçbiri düşünme bloğunu kapatamadı. 23'ü birebir döngüye girdi ve çoğu tam olarak aynı kelimede, aynı yerde girdi. doğru sayısı iki sınırda da 3. greedy decoding'de model aynı satırları yazmaya başladıktan sonra ona daha fazla yer vermek sadece aynı satırları daha çok yazdırıyor.
+hiçbir şey değişmedi. 25 cevabın hiçbiri düşünme bloğunu kapatamadı. 23'ü birebir döngüye girdi, çoğu da tam olarak aynı kelimede. doğru sayısı iki sınırda da 3. greedy decoding'de model aynı satırları yazmaya bir kez başlayınca ona daha fazla yer vermek, aynı satırları daha çok yazması demek.
 
 ## greedy mi suçlu
 
-qwen [model kartında](https://huggingface.co/Qwen/Qwen3.5-0.8B) düşünme modu için iki örnekleme ayarı öneriyor, biri kod görevleri için, biri metin görevleri için. haklı bir itiraz da şu olurdu. belki döngüyü ben üretiyorum, çünkü greedy her seferinde en olası kelimeyi seçtiği için bir kez tekrara giren model oradan çıkamıyor. aynı 100 soruyu iki ayarla da sordum. kod ayarı mit'nin kullandığı sıcaklık.[^ornek]
+buraya kadar her şeyi greedy ile yaptım ve bu da haklı bir itiraza kapı açıyor. greedy her adımda en olası kelimeyi seçtiği için bir kez tekrara düşen model oradan çıkamıyor olabilir. yani döngüyü belki ben üretiyorum. qwen [model kartında](https://huggingface.co/Qwen/Qwen3.5-0.8B) düşünme modu için iki örnekleme ayarı öneriyor, biri kod görevleri, biri metin görevleri için. ikisinde de model her adımda kelimeyi biraz zar atarak seçiyor. aynı 100 soruyu iki ayarla da sordum. kod ayarı mit'nin kullandığı sıcaklıkla aynı.[^ornek]
 
 | düşünme açık | sınıra dayanan | birebir döngüye giren | döngünün başladığı kelime | doğru |
-|---|---|---|---|---|
+|---|--:|--:|--:|--:|
 | greedy | 100 | 95 | 524 | 10 |
 | kod ayarı | 100 | 61 | 1123 | 11 |
 | metin ayarı, tekrar cezalı | 99 | 0 | - | 8 |
 
-kod ayarı birebir kopyayı azaltıyor ve geciktiriyor ama model yine hiçbir soruyu bitiremiyor. 100 cevaptan sadece biri düşünme bloğunu kapatıyor.
+kod ayarı birebir kopyayı azaltıp geciktiriyor ama model yine hiçbir soruyu bitiremiyor. 100 cevaptan sadece biri düşünme bloğunu kapatıyor.
 
-metin ayarında bir de tekrar cezası var (presence_penalty 1.5). bu ceza birebir kopyayı tamamen bitiriyor, 100 cevabın hiçbiri birebir döngüye girmiyor. buna rağmen 99 cevap sınıra dayanıyor ve doğru sayısı 8'e iniyor. cevaplara bakınca model aynı kontrolü bu sefer her seferinde başka kelimelerle yapıyor. ilk soruda sınır gelmeden hemen önce şunları yazıyor:
+metin ayarında bir de tekrar cezası var (presence_penalty 1.5). bu ceza birebir kopyayı tamamen bitiriyor, 100 cevabın hiçbiri birebir döngüye girmiyor. buna rağmen 99 cevap sınıra dayanıyor ve doğru sayısı 8'e iniyor. cevaplara bakınca model aynı kontrolü yapmaya devam ediyor, sadece her turda başka kelimelerle. ilk soruda sınır gelmeden hemen önce şunu yazıyor:
 
 > $1 \text{ D} = \frac{4}{7} \text{ Y}$. Correct.
 >
 > Okay, this seems consistent.
 
-4 dap 7 yap ettiğine göre 1 dap 7/4 yap eder. yani model kontrol ederken yanlış bir eşitliği doğru sayıyor.
+4 dap 7 yap ettiğine göre 1 dap 7/4 yap eder. yani model kontrol ederken yanlış bir eşitliğe "doğru" diyor.
 
-döngüyü greedy yaratmıyor, tekrar cezası da kırmıyor. ikisi de sadece aynı kontrol halkasının nasıl göründüğünü değiştiriyor. greedy'de birebir kopya oluyor, cezayla aynı şüphe her turda başka kelimelerle geri geliyor.
+kısacası döngüyü greedy yaratmıyor, tekrar cezası da kırmıyor. ikisi de aynı bitmeyen kontrolün sadece nasıl göründüğünü değiştiriyor. greedy'de birebir kopya çıkıyor, cezalıyken aynı şüphe her turda başka kelimelerle geri geliyor.
 
 ## döngüyü kesince ne oluyor
 
-buraya kadar hep "döngü kırılırsa skor yükselir" dedim ama bunu ölçmedim. en kaba yolla ölçtüm. her cevabı döngünün başladığı kelimede kestim, sonuna düşünme bloğunu kapatan `</think>` etiketini ekledim ve modelin son cevabı yazmasına izin verdim. modelin içine hiç dokunmadım.[^zorla]
+buraya kadar hep "döngü kırılırsa skor yükselir" deyip durdum ama bunu hiç ölçmedim. en kaba yolla ölçtüm. her cevabı döngünün başladığı kelimede kestim, sonuna düşünme bloğunu kapatan `</think>` etiketini ekledim ve modelin son cevabını yazmasına izin verdim. modelin içine hiç dokunmadım.[^zorla]
 
 | düşünme açık, aynı 100 soru | doğru |
-|---|---|
+|---|--:|
 | hiçbir şey yapmadan | 10 |
 | döngünün başladığı yerde kesince | **35** |
 | 4096 token'ın sonunda kesince | 33 |
 | karşılaştırma için: düşünme kapalı | 41 |
 
-döngüyü kesmek doğru sayısını 10'dan 35'e çıkarıyor. tabanda doğru olup kesince yanlışa dönen tek bir soru yok. 25 soru yanlıştan doğruya dönüyor. bunların bir kısmında model cevabı düşüncenin içinde zaten bulmuş ve "bitti" diyemiyor. kalanında ise doğru cevap, düşünce kapandıktan sonra yazdığı son cevapta çıkıyor.[^ayrim] mit'nin kazancının nereden geldiğine dair elimdeki en güçlü kanıt bu.
+döngüyü kesmek doğru sayısını 10'dan 35'e çıkarıyor. tabanda doğru olup kesince yanlışa dönen tek bir soru bile yok, 25 soru da yanlıştan doğruya dönüyor. bunların bir kısmında model cevabı düşüncenin içinde zaten bulmuş, sadece "bitti" diyememiş. kalanında doğru cevap, düşünce kapandıktan sonra yazdığı son cevapta ortaya çıkıyor.[^ayrim] mit'nin kazancının nereden geldiğine dair elimdeki en güçlü kanıt bu.
 
-iki şey daha dikkatimi çekti. döngüde kesmekle sonuna kadar bekleyip kesmek neredeyse aynı sonucu veriyor, 35 ile 33. yani döngü bir şey kaybettirmiyor, sadece yeri dolduruyor. ikincisi, döngü kırılınca bile 35, düşünme modu kapalıyken 41. bu boyuttaki bir modelde düşünme modu benim ayarlarımda kazanç getirmiyor. sadece modeli bitiremeyeceği bir kontrol halkasına sokuyor.
+iki şey daha dikkatimi çekti. döngünün başladığı yerde kesmekle 4096 token'ın sonunda kesmek neredeyse aynı sonucu veriyor, 35 ile 33. yani döngüde geçen kısım cevaba hiçbir şey katmıyor, sadece yer kaplıyor. ikincisi, döngü kırılınca bile 35 doğru var, düşünme modu kapalıyken ise 41. benim ayarlarımda bu boyuttaki bir model düşünme modundan bir şey kazanmıyor. düşünme modu onu sadece bitiremeyeceği bir kontrole sokuyor.
 
 ## nereye vardım
 
-üç yazıdır aynı modelin içine bakıyorum. elimde kalanlar şunlar.
+üç yazıdır aynı modelin içine bakıyorum ve elimde kalanlar şunlar.
 
-- model takılacaksa bu cevabın ilk paragrafında modelin içinden belli oluyor.
+- model takılacaksa bu, cevabın daha ilk paragrafında modelin içinden belli oluyor.
 - bu sinyal bir bitirme ekseni gibi çalışıyor. bir yöne itince model daha çok, öbür yöne itince daha az takılıyor. doğru cevap sayısı ise artmıyor.
 - mit'nin ayarlarında model neredeyse her soruda kendini birebir kopyalayan bir döngüye giriyor. döngüyü dışarıdan kesince doğru sayısı 10'dan 35'e çıkıyor. kazancın büyük kısmı buradan geliyor.
-- benim elle bulduğum üç yön bu döngüyü kıramadı, düşünme modundan çıkardığım dahil. dışarıdan tekrar cezası vermek birebir kopyayı kırıyor, qwen'in önerdiği ayar onu tamamen bitiriyor. model ise aynı şüpheyi başka kelimelerle sürdürüyor ve doğru sayısı artmıyor. daha uzun sınır hiçbir şeyi değiştirmiyor.
-- mit'nin astra'sı modelin içinde benim bulamadığım bir şey bulmuş. ya da düzenlemenin yanında başka bir şey de yapmış. bunu ayırt edemedim.
+- elle bulduğum üç yön, düşünme modundan çıkardığım da dahil, bu döngüyü kıramadı. dışarıdan verilen tekrar cezası birebir kopyayı azaltıyor, qwen'in önerdiği ayar ise tamamen bitiriyor. model buna rağmen aynı şüpheyi başka kelimelerle sürdürüyor ve doğru sayısı artmıyor. daha uzun sınır da hiçbir şeyi değiştirmiyor.
+- mit'nin astra'sı ya modelin içinde benim bulamadığım bir şey buldu ya da düzenlemenin yanında başka bir şey de yaptı. bu ikisini ayırt edemedim.
 
-astra'ya "bul ve düzelt" demek yerine kendim bakmak istemiştim. döngünün nerede olduğunu ve kırılınca ne kazanıldığını buldum. modelin içinde onu kıran düğmeyi bulamadım. bulamadığım kısmı da burada dürüstçe yazmak istedim.
+işi astra'ya bırakmak yerine kendim bakmak istemiştim. döngünün nerede olduğunu ve kırılınca ne kazanıldığını buldum. modelin içinde onu kıran düğmeyi ise bulamadım. bulamadığım kısmı da buraya olduğu gibi yazmak istedim.
 
 bir sonraki yazıda başka bir soruya geçiyorum. türkçe konuşan bir model kafasında ingilizce mi düşünüyor?
 
 kodlar ve ham cevaplar [github'da](https://github.com/FurkanKY/modelin-icini-acmak).
 
-[^konum]: modelin içi cevabın başında ve sonunda farklı olduğu için iki grubu da sadece 512. token'dan sonraki konumlardan aldım. yön 15. katmandan. düzenlemeler 8. ile 22. katlar arasında, ağırlıklardan W − αu(uᵀW) ile yapıldı. "64 sütun" denemesi 15. ve 19. katların mlp'sinde yönü en çok yazan 64 sütunla sınırlı.
+[^konum]: modelin içi cevabın başında ve sonunda farklı olduğu için iki grubu da sadece 512. token'dan sonraki konumlardan aldım. yön 15. kattan. düzenlemeleri 8. ile 22. katlar arasında, ağırlıklara W − αu(uᵀW) uygulayarak yaptım. "64 sütun" denemesi 15. ve 19. katların mlp'sinde bu yönü en çok yazan 64 sütunla sınırlı.
 
-[^tekrar]: bu denemeleri ilk kez 8 kasımda çalıştırmıştım. ham cevaplar colab oturumu sıfırlanınca kaybolunca hepsini, düzenlenmemiş taban dahil, aynı oturumda yeniden çalıştırdım. tekrar yönü birebir aynı çıktı (aynı 126.111 ve 185.213 an, bitirme yönüyle aynı 0.14 benzerlik). sayılar ilk çalıştırmadan birkaç soru farklı. en büyük fark 1.5 katlı silmede, takılan 41 yerine 35. ilk çalıştırmada taban önceki bir oturumdandı, bu sefer hepsi aynı kütüphane sürümüyle.
+[^tekrar]: bu denemeleri ilk kez 8 kasımda çalıştırmıştım. colab oturumu sıfırlanınca ham cevaplar gitti, ben de düzenlenmemiş taban dahil hepsini aynı oturumda yeniden çalıştırdım. tekrar yönü birebir aynı çıktı (aynı 126.111 ve 185.213 an, bitirme yönüyle aynı 0.14 benzerlik). sayılar ilk çalıştırmadan birkaç soru farklı. en büyük fark 1.5 katlı silmede, takılan 41 yerine 35. ilk çalıştırmada taban önceki bir oturumdan geliyordu, bu sefer hepsi aynı kütüphane sürümüyle çalıştı.
 
-[^yeniyon]: düşünme modu açık, 0-99. sorular, aynı 8 token'lık tekrar tanımı, yine 512. token'dan sonraki konumlar ve 15. kat. yeni yön bitirme yönüyle 0.09 benzerlikte. düzenleme 8-22. katlarda W − αu(uᵀW). colab oturumu bu denemelerden önce sıfırlandığı için düzenlenmemiş tabanı da aynı oturumda yeniden çalıştırdım. sayılar ilk çalıştırmayla birebir aynı çıktı (10 doğru, 95 döngü, 524. kelime).
+[^yeniyon]: düşünme modu açık, 0-99. sorular, aynı 8 token'lık tekrar tanımı, yine 512. token'dan sonraki konumlar ve 15. kat. yeni yönün bitirme yönüyle benzerliği 0.09. düzenleme 8-22. katlarda W − αu(uᵀW). colab oturumu bu denemelerden önce sıfırlandığı için düzenlenmemiş tabanı da aynı oturumda yeniden çalıştırdım. sayılar ilk çalıştırmayla birebir aynı çıktı (10 doğru, 95 döngü, 524. kelime).
 
-[^ornek]: kod ayarı temperature 0.6, top_p 0.95, top_k 20. metin ayarı temperature 1.0, top_p 0.95, top_k 20 ve sonsuz tekrarları azaltmak için presence_penalty 1.5. ikisi de tohum 0, tek bir örnekleme. kullandığım kütüphanede (transformers) presence_penalty yok, oradaki repetition_penalty başka türlü çalışıyor. o yüzden cezayı kendim yazdım. vllm'deki sırayla önce ceza, sonra sıcaklık, top_k ve top_p uygulanıyor. ceza sadece modelin bu cevapta yazdığı token'lara veriliyor, sorunun kendisine değil. birkaç tohumla tekrar etmek sayıları birkaç soru oynatabilir ama 100'de 99-100 sınıra dayanma sonucunu değiştirmesi zor.
+[^ornek]: kod ayarı temperature 0.6, top_p 0.95, top_k 20. metin ayarı temperature 1.0, top_p 0.95, top_k 20, bir de sonsuz tekrarları azaltmak için presence_penalty 1.5. ikisinde de tohum 0 ve tek örnekleme var. kullandığım kütüphanede (transformers) presence_penalty yok, oradaki repetition_penalty de başka türlü çalışıyor. o yüzden cezayı kendim yazdım. vllm'deki sırayı izledim, önce ceza, sonra sıcaklık, top_k ve top_p. ceza sadece modelin bu cevapta yazdığı token'lara uygulanıyor, sorunun kendisine değil. birkaç farklı tohumla tekrarlamak sayıları birkaç soru oynatabilir ama 100 cevaptan 99-100'ünün sınıra dayandığı sonucu pek değişmez.
 
 [^ayrim]: aynı kesmeyi kelime yerine token bazında da tekrarladım (34 doğru) ve kesme anındaki düşünceyi ayrıca puanladım. 14 soruda doğru cevap düşüncenin içinde zaten yazılıydı.
 
-[^zorla]: literatürde buna "budget forcing" deniyor, [s1 makalesinden](https://arxiv.org/abs/2501.19393) geliyor. kesilen cevaba `</think>` ekleyip greedy ile en fazla 1024 token daha yazdırdım ve sadece bu yeni kısmı puanladım. 1024 token'da cevapların 40'ı bitti, geri kalanında model son cevabı yazarken yer bitti. yani 35 bir alt sınır. tabanla karşılaştırınca 25 soru yanlıştan doğruya döndü, ters yönde hiçbiri (mcnemar p < 0.0001). döngüye girmeyen 5 cevapta iki koşul aynı.
+[^zorla]: literatürde buna "budget forcing" deniyor, fikir [s1 makalesinden](https://arxiv.org/abs/2501.19393) geliyor. kesilen cevaba `</think>` ekleyip greedy ile en fazla 1024 token daha yazdırdım ve sadece bu yeni kısmı puanladım. 1024 token içinde cevapların 40'ı bitti, geri kalanında model son cevabı yazarken yeri tükendi. yani 35 bir alt sınır. tabanla karşılaştırınca 25 soru yanlıştan doğruya döndü, ters yönde hiçbiri (mcnemar p < 0.0001). döngüye girmeyen 5 cevapta iki koşul aynı.
 
-[^sinir]: mit 32.768 token sınırı kullanmış, ben 4096. bu yüzden düşünme modunda "sınıra dayanan" sayısı bende her durumda yüksek çıkar. birebir döngü ise sınırdan bağımsız. aşağıda 25 soruyu 16.384 token'la tekrar çalıştırdım, sonuç değişmedi.
+[^sinir]: mit 32.768 token sınırı kullanmış, ben 4096. o yüzden düşünme modunda "sınıra dayanan" sayısı bende her durumda yüksek çıkıyor. birebir döngü ise sınırdan bağımsız. aşağıda 25 soruyu 16.384 token'la yeniden çalıştırdım, sonuç değişmedi.
