@@ -62,7 +62,7 @@ bunu sayıya dökmek için her cevabın üstünde 200 kelimelik bir pencere kayd
 
 düşünme modunda 100 cevabın 95'i birebir döngüye giriyor ve döngü genelde 520. kelime civarında başlıyor. mit'nin "cevapların %93'ü sınıra dayanıyor" dediği şey büyük ihtimalle bu. bende bu oranın %33 çıkmasının sebebi düşünme modunu kapalı tutmammış.[^sinir]
 
-bu durum mit'nin büyük kazancını da açıklayabilir. düşünme modunda model neredeyse her soruda takılıyor, bazılarında da cevabı bulduktan sonra takılıyor. döngü kırılırsa skor baya yükselebilir. düşünme kapalıyken model zaten çoğu soruyu bitirdiği için kırılacak döngü de az. bunu yazının sonunda ölçtüm.
+bu durum mit'nin büyük kazancını da açıklayabilir. düşünme modunda model neredeyse her soruda takılıyor, bazılarında da cevabı bulduktan sonra takılıyor. döngü kırılırsa skor baya yükselebilir. mit de kendi yazısında kurtardığı 579 cevabın 576'sının başta sınıra dayanan cevaplar olduğunu yazıyor, yani kazancın takılan cevaplardan geldiğini onlar da söylüyor. düşünme kapalıyken model zaten çoğu soruyu bitirdiği için kırılacak döngü de az. döngü kırılınca ne kadar kazanıldığını yazının sonunda ölçtüm.
 
 ## yönler bu döngüyü kırıyor mu
 
@@ -144,7 +144,9 @@ buraya kadar hep "döngü kırılırsa skor yükselir" deyip durdum ama bunu hi�
 | 4096 token'ın sonunda kesince | 33 |
 | karşılaştırma için: düşünme kapalı | 41 |
 
-döngüyü kesmek doğru sayısını 10'dan 35'e çıkarıyor. tabanda doğru olup kesince yanlışa dönen tek bir soru bile yok, 25 soru da yanlıştan doğruya dönüyor. bunların bir kısmında model cevabı düşüncenin içinde zaten bulmuş, sadece "bitti" diyememiş. kalanında doğru cevap, düşünce kapandıktan sonra yazdığı son cevapta ortaya çıkıyor.[^ayrim] mit'nin kazancının nereden geldiğine dair elimdeki en güçlü kanıt bu.
+döngüyü kesmek doğru sayısını 10'dan 35'e çıkarıyor. tabanda doğru olup kesince yanlışa dönen tek bir soru bile yok, 25 soru da yanlıştan doğruya dönüyor. bunların bir kısmında model cevabı düşüncenin içinde zaten bulmuş, sadece "bitti" diyememiş. kalanında doğru cevap, düşünce kapandıktan sonra yazdığı son cevapta ortaya çıkıyor.[^ayrim] bu, mit'nin kazancın takılan cevaplardan geldiği tespitiyle uyuşuyor.
+
+yine de iki sonucu birebir karşılaştırmak doğru olmaz. mit, düzenlenmiş modelin doğru cevaplarının ortanca uzunluğunu 9.172 token olarak veriyor ve bunu modelin sadece erken bitirmeye zorlanmadığının kanıtı olarak gösteriyor. bu uzunluk benim 4096 token'lık sınırımın baya üstünde, yani benim ayarlarımda başarılı bir düzenleme bile takılmış görünebilirdi. benim kesme denemem ise modelin içine hiç dokunmadan bu kazancın ne kadarının geri gelebildiğini gösteriyor.
 
 iki şey daha dikkatimi çekti. döngünün başladığı yerde kesmekle 4096 token'ın sonunda kesmek neredeyse aynı sonucu veriyor, 35 ile 33. yani döngüde geçen kısım cevaba hiçbir şey katmıyor, sadece yer kaplıyor. ikincisi, döngü kırılınca bile 35 doğru var, düşünme modu kapalıyken ise 41. benim ayarlarımda bu boyuttaki bir model düşünme modundan bir şey kazanmıyor. düşünme modu onu sadece bitiremeyeceği bir kontrole sokuyor.
 
@@ -154,11 +156,19 @@ iki şey daha dikkatimi çekti. döngünün başladığı yerde kesmekle 4096 to
 
 - model takılacaksa bu, cevabın daha ilk paragrafında modelin içinden belli oluyor.
 - bu sinyal bir bitirme ekseni gibi çalışıyor. bir yöne itince model daha çok, öbür yöne itince daha az takılıyor. doğru cevap sayısı ise artmıyor.
-- mit'nin ayarlarında model neredeyse her soruda kendini birebir kopyalayan bir döngüye giriyor. döngüyü dışarıdan kesince doğru sayısı 10'dan 35'e çıkıyor. kazancın büyük kısmı buradan geliyor.
+- mit'nin ayarlarında model neredeyse her soruda kendini birebir kopyalayan bir döngüye giriyor. döngüyü dışarıdan kesince doğru sayısı 10'dan 35'e çıkıyor. mit'nin de söylediği gibi kazancın büyük kısmı takılan cevaplardan geliyor gibi duruyor.
 - elle bulduğum üç yön, düşünme modundan çıkardığım da dahil, bu döngüyü kıramadı. dışarıdan verilen tekrar cezası birebir kopyayı azaltıyor, qwen'in önerdiği ayar ise tamamen bitiriyor. model buna rağmen aynı şüpheyi başka kelimelerle sürdürüyor ve doğru sayısı artmıyor. daha uzun sınır da hiçbir şeyi değiştirmiyor.
 - mit'nin astra'sı ya modelin içinde benim bulamadığım bir şey buldu ya da düzenlemenin yanında başka bir şey de yaptı. bu ikisini ayırt edemedim.
 
 işi astra'ya bırakmak yerine kendim bakmak istemiştim. döngünün nerede olduğunu ve kırılınca ne kazanıldığını buldum. modelin içinde onu kıran düğmeyi ise bulamadım. bulamadığım kısmı da buraya olduğu gibi yazmak istedim.
+
+## bunları daha önce yapan var mı
+
+yazıyı bitirdikten sonra kullandığım yöntemlerin ne kadarının daha önce denendiğine baktım. çoğu denenmiş. küçük ve damıtılmış modellerin düşük sıcaklıkta ve greedy ile döngüye girdiğini, sıcaklığı artırmanın ise sadece geçici bir çare olduğunu [pipis ve ekibi](https://arxiv.org/abs/2512.12895) göstermiş. döngünün başlamadan önce modelin içinden yakalanabildiğini [duan ve ekibi](https://arxiv.org/abs/2601.05693), döngüye giren cevabı kesip yeniden yazdırmayı da [xie ve ekibi](https://aclanthology.org/2025.emnlp-main.1705/) denemiş.
+
+en yakın çalışma [nguyen ve ekibinin](https://arxiv.org/abs/2610.19934) budanmış modeller üzerine yaptığı. onlar da bitiremeyen cevapların çoğunda doğru cevabın zaten yazılmış olduğunu ve modeli bitirmeye iten bir yön bulunabildiğini göstermiş. onlarda bu yön doğru sayısını da artırıyor, benim bitirme yönüm ise hiç artırmadı. bu farkın nereden geldiğini bilmiyorum. düşünme uzunluğunu yöneten bir yönü ağırlıklardan silmeyi [thinkedit](https://arxiv.org/abs/2503.22048), W − αu(uᵀW) ile ağırlıklardan bir yön silmeyi de reddetme davranışı için [arditi ve ekibi](https://arxiv.org/abs/2406.11717) daha önce yapmıştı.
+
+benim yaptığım bu parçaları mit'nin düzenlediği modelin aynısında yan yana koyup skoru hangisinin gerçekten taşıdığına bakmak oldu.
 
 bir sonraki yazıda başka bir soruya geçiyorum. türkçe konuşan bir model kafasında ingilizce mi düşünüyor?
 
@@ -170,7 +180,7 @@ kodlar ve ham cevaplar [github'da](https://github.com/FurkanKY/modelin-icini-acm
 
 [^yeniyon]: düşünme modu açık, 0-99. sorular, aynı 8 token'lık tekrar tanımı, yine 512. token'dan sonraki konumlar ve 15. kat. yeni yönün bitirme yönüyle benzerliği 0.09. düzenleme 8-22. katlarda W − αu(uᵀW). colab oturumu bu denemelerden önce sıfırlandığı için düzenlenmemiş tabanı da aynı oturumda yeniden çalıştırdım. sayılar ilk çalıştırmayla birebir aynı çıktı (10 doğru, 95 döngü, 524. kelime).
 
-[^ornek]: kod ayarı temperature 0.6, top_p 0.95, top_k 20. metin ayarı temperature 1.0, top_p 0.95, top_k 20, bir de sonsuz tekrarları azaltmak için presence_penalty 1.5. ikisinde de tohum 0 ve tek örnekleme var. kullandığım kütüphanede (transformers) presence_penalty yok, oradaki repetition_penalty de başka türlü çalışıyor. o yüzden cezayı kendim yazdım. vllm'deki sırayı izledim, önce ceza, sonra sıcaklık, top_k ve top_p. ceza sadece modelin bu cevapta yazdığı token'lara uygulanıyor, sorunun kendisine değil. birkaç farklı tohumla tekrarlamak sayıları birkaç soru oynatabilir ama 100 cevaptan 99-100'ünün sınıra dayandığı sonucu pek değişmez.
+[^ornek]: kod ayarı temperature 0.6, top_p 0.95, top_k 20. metin ayarı temperature 1.0, top_p 0.95, top_k 20, bir de sonsuz tekrarları azaltmak için presence_penalty 1.5. ikisinde de tohum 0 ve tek örnekleme var. kullandığım kütüphanede (transformers) presence_penalty yok, oradaki repetition_penalty de başka türlü çalışıyor. o yüzden cezayı kendim yazdım. vllm'deki sırayı izledim, önce ceza, sonra sıcaklık, top_k ve top_p. ceza sadece modelin bu cevapta yazdığı token'lara uygulanıyor, sorunun kendisine değil. birkaç farklı tohumla tekrarlamak sayıları birkaç soru oynatabilir ama 100 cevaptan 99-100'ünün sınıra dayandığı sonucu pek değişmez. mit ise temperature 0.6 ile presence_penalty 1.5'i birlikte kullanmış. bu ikisini aynı anda denemedim.
 
 [^ayrim]: aynı kesmeyi kelime yerine token bazında da tekrarladım (34 doğru) ve kesme anındaki düşünceyi ayrıca puanladım. 14 soruda doğru cevap düşüncenin içinde zaten yazılıydı.
 
