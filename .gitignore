@@ -11,3 +11,5 @@ __pycache__/
 # yayımlanmamış yazı taslakları, yayına girince eklenir
 blog/04-*.mdx
 blog/05-*.mdx
+blog/figures/04-*
+blog/figures/05-*
