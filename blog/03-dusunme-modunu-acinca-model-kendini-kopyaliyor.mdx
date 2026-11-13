@@ -115,14 +115,25 @@ hiçbir şey değişmedi. 25 cevabın hiçbiri düşünme bloğunu kapatamadı. 
 
 ## greedy mi suçlu
 
-qwen [model kartında](https://huggingface.co/Qwen/Qwen3.5-0.8B) düşünme modu için örnekleme ayarları öneriyor. haklı bir itiraz da şu olurdu. belki döngüyü ben üretiyorum, çünkü greedy her seferinde en olası kelimeyi seçtiği için bir kez tekrara giren model oradan çıkamıyor. aynı 100 soruyu örneklemeyle, mit'nin kullandığı sıcaklıkla sordum.[^ornek]
+qwen [model kartında](https://huggingface.co/Qwen/Qwen3.5-0.8B) düşünme modu için iki örnekleme ayarı öneriyor, biri kod görevleri için, biri metin görevleri için. haklı bir itiraz da şu olurdu. belki döngüyü ben üretiyorum, çünkü greedy her seferinde en olası kelimeyi seçtiği için bir kez tekrara giren model oradan çıkamıyor. aynı 100 soruyu iki ayarla da sordum. kod ayarı mit'nin kullandığı sıcaklık.[^ornek]
 
 | düşünme açık | sınıra dayanan | birebir döngüye giren | döngünün başladığı kelime | doğru |
 |---|---|---|---|---|
 | greedy | 100 | 95 | 524 | 10 |
-| örnekleme | 100 | 61 | 1123 | 11 |
+| kod ayarı | 100 | 61 | 1123 | 11 |
+| metin ayarı, tekrar cezalı | 99 | 0 | - | 8 |
 
-örnekleme birebir kopyayı azaltıyor ve geciktiriyor. ama model yine hiçbir soruyu bitiremiyor. 100 cevaptan sadece biri düşünme bloğunu kapatıyor. döngüyü greedy yaratmıyor. greedy sadece aynı kontrol halkasını birebir kopyaya çeviriyor.
+kod ayarı birebir kopyayı azaltıyor ve geciktiriyor ama model yine hiçbir soruyu bitiremiyor. 100 cevaptan sadece biri düşünme bloğunu kapatıyor.
+
+metin ayarında bir de tekrar cezası var (presence_penalty 1.5). bu ceza birebir kopyayı tamamen bitiriyor, 100 cevabın hiçbiri birebir döngüye girmiyor. buna rağmen 99 cevap sınıra dayanıyor ve doğru sayısı 8'e iniyor. cevaplara bakınca model aynı kontrolü bu sefer her seferinde başka kelimelerle yapıyor. ilk soruda sınır gelmeden hemen önce şunları yazıyor:
+
+> $1 	ext{ D} = rac{4}{7} 	ext{ Y}$. Correct.
+>
+> Okay, this seems consistent.
+
+4 dap 7 yap ettiğine göre 1 dap 7/4 yap eder. yani model kontrol ederken yanlış bir eşitliği doğru sayıyor.
+
+döngüyü greedy yaratmıyor, tekrar cezası da kırmıyor. ikisi de sadece aynı kontrol halkasının nasıl göründüğünü değiştiriyor. greedy'de birebir kopya oluyor, cezayla aynı şüphe her turda başka kelimelerle geri geliyor.
 
 ## döngüyü kesince ne oluyor
 
@@ -146,7 +157,7 @@ iki şey daha dikkatimi çekti. döngüde kesmekle sonuna kadar bekleyip kesmek 
 - model takılacaksa bu cevabın ilk paragrafında modelin içinden belli oluyor.
 - bu sinyal bir bitirme ekseni gibi çalışıyor. bir yöne itince model daha çok, öbür yöne itince daha az takılıyor. doğru cevap sayısı ise artmıyor.
 - mit'nin ayarlarında model neredeyse her soruda kendini birebir kopyalayan bir döngüye giriyor. döngüyü dışarıdan kesince doğru sayısı 10'dan 35'e çıkıyor. kazancın büyük kısmı buradan geliyor.
-- benim elle bulduğum üç yön bu döngüyü kıramadı, düşünme modundan çıkardığım dahil. dışarıdan tekrar cezası vermek döngüyü kısmen kırıyor ama model aynı şüpheyi başka kelimelerle sürdürüyor. daha uzun sınır hiçbir şeyi değiştirmiyor.
+- benim elle bulduğum üç yön bu döngüyü kıramadı, düşünme modundan çıkardığım dahil. dışarıdan tekrar cezası vermek birebir kopyayı kırıyor, qwen'in önerdiği ayar onu tamamen bitiriyor. model ise aynı şüpheyi başka kelimelerle sürdürüyor ve doğru sayısı artmıyor. daha uzun sınır hiçbir şeyi değiştirmiyor.
 - mit'nin astra'sı modelin içinde benim bulamadığım bir şey bulmuş. ya da düzenlemenin yanında başka bir şey de yapmış. bunu ayırt edemedim.
 
 astra'ya "bul ve düzelt" demek yerine kendim bakmak istemiştim. döngünün nerede olduğunu ve kırılınca ne kazanıldığını buldum. modelin içinde onu kıran düğmeyi bulamadım. bulamadığım kısmı da burada dürüstçe yazmak istedim.
@@ -161,7 +172,7 @@ kodlar ve ham cevaplar [github'da](https://github.com/FurkanKY/modelin-icini-acm
 
 [^yeniyon]: düşünme modu açık, 0-99. sorular, aynı 8 token'lık tekrar tanımı, yine 512. token'dan sonraki konumlar ve 15. kat. yeni yön bitirme yönüyle 0.09 benzerlikte. düzenleme 8-22. katlarda W − αu(uᵀW). colab oturumu bu denemelerden önce sıfırlandığı için düzenlenmemiş tabanı da aynı oturumda yeniden çalıştırdım. sayılar ilk çalıştırmayla birebir aynı çıktı (10 doğru, 95 döngü, 524. kelime).
 
-[^ornek]: temperature 0.6, top_p 0.95, top_k 20, tohum 0. tek bir örnekleme. qwen bu değerleri düşünme modunda kod görevleri için öneriyor. metin görevleri için önerisi temperature 1.0 ve sonsuz tekrarları azaltmak için presence_penalty 1.5. bunu denemedim. birkaç tohumla tekrar etmek sayıları birkaç soru oynatabilir ama 100'de 100 sınıra dayanma sonucunu değiştirmesi zor.
+[^ornek]: kod ayarı temperature 0.6, top_p 0.95, top_k 20. metin ayarı temperature 1.0, top_p 0.95, top_k 20 ve sonsuz tekrarları azaltmak için presence_penalty 1.5. ikisi de tohum 0, tek bir örnekleme. kullandığım kütüphanede (transformers) presence_penalty yok, oradaki repetition_penalty başka türlü çalışıyor. o yüzden cezayı kendim yazdım. vllm'deki sırayla önce ceza, sonra sıcaklık, top_k ve top_p uygulanıyor. ceza sadece modelin bu cevapta yazdığı token'lara veriliyor, sorunun kendisine değil. birkaç tohumla tekrar etmek sayıları birkaç soru oynatabilir ama 100'de 99-100 sınıra dayanma sonucunu değiştirmesi zor.
 
 [^ayrim]: 5. yazıda aynı kesmeyi token bazında tekrarladım (34 doğru) ve kesme anındaki düşünceyi ayrıca puanladım. 14 soruda doğru cevap düşüncenin içinde zaten yazılıydı.
 
