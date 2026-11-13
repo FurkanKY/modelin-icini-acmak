@@ -7,3 +7,7 @@ _preview.png
 __pycache__/
 .ipynb_checkpoints/
 .venv/
+
+# yayımlanmamış yazı taslakları, yayına girince eklenir
+blog/04-*.mdx
+blog/05-*.mdx
