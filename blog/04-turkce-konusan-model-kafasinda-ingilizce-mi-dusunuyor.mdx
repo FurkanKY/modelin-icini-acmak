@@ -1,0 +1,157 @@
+export const meta = {
+  title: "türkçe konuşan model kafasında ingilizce mi düşünüyor?",
+  date: "2026-11-14",
+  summary: "dört modele fransızcadan ve almancadan türkçeye kelime çevirtip içlerine katman katman baktım. qwen kavramı ingilizceye yakın tutuyor, çinceye de bir o kadar. kumru ise çeviri yaparken ingilizceye hiç ihtiyaç duymuyor.",
+  kind: "experiment",
+  facts: [
+    { k: "model", v: "qwen3.5 · 0.8b, 2b, 4b", href: "https://huggingface.co/Qwen/Qwen3.5-4B" },
+    { k: "türkçe model", v: "kumru-2b", href: "https://huggingface.co/vngrs-ai/Kumru-2B-Base" },
+    { k: "veri", v: "93 kelime · fr, de → tr" },
+    { k: "donanım", v: "colab t4" },
+    { k: "kod", v: "github", href: "https://github.com/FurkanKY/modelin-icini-acmak" },
+  ],
+  series: "modelin içini açmak",
+  status: "devam ediyor",
+};
+
+bir yapay zekaya türkçe bir şey sorduğumda cevap vermeden önce kafasında ingilizceye çevirip çevirmediğini hep merak ederdim. dört modelin içini açıp buna kendim bakmak istedim.
+
+bunu ilk merak eden ben değilim tabi. wendler 2024'te [llama-2'ye bakıp](https://arxiv.org/abs/2402.10588) modelin ortadaki katmanlarda ingilizceye yakın bir yerden geçtiğini göstermiş. türkçe için aynısını yapan bir çalışmaya denk gelmedim. iki tür model seçtim. birincisi qwen3.5, internetteki bir sürü dilden metinle eğitilmiş çok dilli bir model ve verisinde ingilizcenin epey ağır bastığını tahmin ediyorum. 0.8b, 2b ve 4b olmak üzere üç boyutunu aldım. karşısına da vngrs'in sıfırdan türkçe için eğittiği [kumru-2b](https://huggingface.co/vngrs-ai/Kumru-2B-Base)'yi koydum.
+
+## deney
+
+kurguyu wendler'den aynen aldım. modele dört örnek çeviri gösterip beşincisini yarım bıraktım:
+
+> Français: "fleur" - Türkçe: "çiçek"
+>
+> ...
+>
+> Français: "chien" - Türkçe: "
+
+modelin burada "köpek" demesi gerekiyor ve dikkat ederseniz ortada hiç ingilizce yok. kitap, su, ağaç, ev gibi 106 somut isim seçip dört dilde yazdım. iki dilde aynı parçayla başlayan kelimelerde hangisinin okunduğunu ayırt edemeyeceğim için onları attım ve fransızcadan türkçeye 93 kelime kaldı.
+
+modelin içine bakmak için [logit lens](https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens) diye bir yöntem kullandım. ilk yazıda modeli bir bina gibi düşünmüştük, kelime katları sırayla çıkıyor ve her katta biraz daha işleniyordu. logit lens her kattaki yarım kalmış işi alıp modele "şu haliyle cevap verseydin ne derdin?" diye soruyor. ben de her katta üç kelimenin olasılığını takip ettim: türkçe cevap ("köpek"), kavramın ingilizcesi ("dog") ve kaynak kelime ("chien").
+
+<Figure
+  src="/blog/turkce-konusan-model-kafasinda-ingilizce-mi-dusunuyor/ara-dil.svg"
+  alt="dört panelde katman katman ingilizce ve türkçe cevabın ortalama olasılığı. qwen 0.8b, 2b ve 4b'de ara katlarda ingilizce tepe yapıyor ve bu tepe boyutla büyüyor, sonra türkçe yükseliyor. kumru'da ingilizce hiç görünmüyor"
+  caption="şekil 1 · fransızcadan türkçeye 93 kelime çevirirken her katta ingilizce ve türkçe cevaba verilen ortalama olasılık (logit lens)"
+/>
+
+grafiğe ilk baktığımda iş bitmiş gibi geldi. qwen'in ara katlarında "dog" okunuyor, son katlara doğru da yerini "köpek"e bırakıyor. model büyüdükçe bu ingilizce oran da büyüyor: 0.8b'de %7.5 olan oran 4b'de %39'a çıkıyor ve 93 kelimenin 92'sinde ingilizce türkçenin önünde gidiyor. kumru'da türkçe en baştan beri yer alıyor, ingilizce ise neredeyse hiç yok.
+
+açıkçası burada "tamam, cevap bu" deyip yazıyı bitirebilirdim. bitirmedim çünkü iki şey içime sinmedi.
+
+## logit lens bizi kandırıyor mu
+
+ilki logit lens'in kendisiydi. bu yöntem ara kattaki yarım işi doğrudan modelin çıkışına veriyor ve qwen'in çıkışı da ingilizceye alışkın. gördüğüm ingilizce doğrudan çıkıştan geliyor olabilirdi.
+
+bunu kontrol etmek için [tuned lens](https://arxiv.org/abs/2303.08112) kullandım. tuned lens her kat için küçük bir tercüman eğitiyor, tercüman da o katın "dilini" son katın anlayacağı dile çeviriyor. modelin kendisine dokunulmuyor, sadece ona baktığım mercek iyileşiyor. hiçbir dili kayırmasınlar diye tercümanları dört dilde eşit miktarda vikipedi metniyle eğittim.
+
+| model | ingilizce, logit lens | ingilizce, tuned lens | türkçe, tuned lens |
+|---|--:|--:|--:|
+| qwen 0.8b | 0.075 | 0.067 | 0.075 |
+| qwen 2b | 0.229 | 0.118 | 0.104 |
+| qwen 4b | 0.386 | **0.179** | 0.092 |
+
+tercümanla bakınca küçük qwen'de ingilizceyle türkçe neredeyse eşitlendi. 4b'de ingilizce yarıya indi ama halen daha türkçenin iki katıydı. kumru'da da tam tersini gördüm. türkçeden fransızcaya çevirirken ara katlardaki türkçe logit lens'te %66 çıkarken tuned lens'te %7'ye düştü. logit lens hangi modele bakarsa baksın o modelin çıkışının alışık olduğu dili şişiriyormuş. demek ki grafikteki ingilizcenin bir kısmı gerçekten mercekten geliyor.
+
+## görmek ile kullanmak
+
+ikinci mesele daha büyüktü. ara katlarda bir şeyin görünmesi, modelin onu kullandığı anlamına gelmiyor. bunu anlamanın yolu o şeyi modelin içinden silip cevabın bozulup bozulmadığına bakmak. yani bir yemekte tuzun ne işe yaradığını anlamak için tuzsuz pişirip tadına bakmak gibi diyebiliriz.
+
+ilk denemede her dil için bir yön çıkardım. o dildeki kelimelerin ortalamasından bütün dillerin ortalamasını çıkarıp ingilizce yönünü ara katlardan sildim. yönleri kelimelerin bir yarısından hesaplayıp öbür yarısında denediğim için elimde az kelime vardı. küçük qwen'in türkçe çevirisi çöktü ve 6 doğru cevap 0'a indi.
+
+sonra yönlere tek tek baktım ve gördüm ki qwen'de ingilizce yönüyle türkçe yönü neredeyse birbirinin tersiydi, aralarındaki kosinüs benzerliği -0.60 çıktı. meğer ingilizceyi silerken türkçeyi de siliyormuşum. ingilizce yönünden türkçenin payını ayıklayıp kalanını silince etki kayboldu ve doğru sayısı 6'dan sadece 5'e indi. tuzunu çıkarayım derken şekeri de çıkarmışım. kumru'da da aynı hataya düştüm.
+
+bunun üzerine daha dar bir test kurdum. her kelimede sadece o kavramın ingilizcesini sildim: "chien" çevrilirken "dog"u, "livre" çevrilirken "book"u. silmeyi ara katlarda, modelin o kelimeyi söylemek için ittiği yönü çıkararak yaptım. ek olarak da yanına üç kontrol koydum:
+
+- **türkçe hedef kelimeyi silmek.** bunun cevabı bozması lazım. bozmuyorsa yöntem çalışmıyor demektir.
+- **kavramın almancasını silmek.** bu bozmamalı. bozuyorsa herhangi bir yabancı kelimeyi silmek yetiyor demektir.
+- **ilgisiz bir ingilizce kelimeyi silmek.** mesela "dog" yerine "apple"ı silmek. bu da bozmamalı.
+
+bir de ingilizce kelimenin türkçe ve kaynak kelimeyle örtüşen kısmını çıkarıp kalanını sildim. bunu yapmasam "dog"u silerken farkında olmadan "köpek"i ya da "chien"i de silebilirdim.[^yontem]
+
+kumru'nun sonucu çok netti. türkçe hedefi silince doğru cevap 38'den 1'e düştü, yani yöntem gerçekten bir şeyleri bozabiliyor. ingilizceyi silince ise doğru sayısı 38'den 40'a çıktı. kumru fransızcadan türkçeye çevirirken ingilizceye hiç ihtiyaç duymuyor. işin ilginç yanı şu ki türkçeden fransızcaya giderken ara katlarda ingilizce gerçekten beliriyor ama silmek çeviriyi bozmuyor.
+
+## qwen 4b
+
+asıl merak ettiğim büyük qwen'di. 4b, fransızcadan türkçeye 93 kelimenin 77'sinde cevabın ilk parçasını doğru tahmin ediyor.
+
+| silinen | doğru | doğru cevabın olasılığı ne kadar düştü |
+|---|--:|--:|
+| hiçbir şey | 77 / 93 | |
+| türkçe hedef | 65 | 0.11 |
+| ingilizce (arındırılmış) | 70 | **0.12** |
+| almanca (arındırılmış) | 76 | 0.02 |
+| ilgisiz ingilizce kelime | 76 | 0.00 |
+
+kavramın ingilizcesini silmek, türkçe cevabın olasılığını türkçe hedefi silmek kadar düşürdü. almancayı ya da ilgisiz bir ingilizce kelimeyi silmekse neredeyse hiçbir şey yapmadı. almancadan türkçeye çevirirken de aynı tabloyu gördüm ki orada kontrol dili olarak fransızcayı sildim.
+
+türkçenin kendisini silmenin daha az etki etmesi ilk başta tuhafıma gitti. meğersem sebep sildiğim katlarmış. 4b'de türkçe ancak 30. kattan sonra ortaya çıkıyor, ben ise 16. ile 27. katlar arasını siliyordum. o katlarda kavramı taşıyan şey ingilizceye yakın duran yön. bunun ne kadar "ingilizce" olduğuna birazdan döneceğim.
+
+aklımda bir şüphe daha vardı. almanca "haus" ile ingilizce "house" birbirine çok benziyor, belki ingilizceyi silerken aslında kaynak kelimenin bilgisini siliyordum. bunu görmek için kelimeleri yazılışı benzeyenler ve benzemeyenler diye ikiye ayırdım. fransızca "chien" ile "dog" arasında hiçbir benzerlik yok ve benzemeyen 83 kelimede de ingilizceyi silmek olasılığı 0.11 düşürdü. yani etki yazılışların benzemesinden gelmiyor.
+
+## arada bir boyut daha
+
+buraya kadar her şey çok derli toplu görünüyordu. "küçük qwen ingilizceyi kullanmıyor, büyüğü kullanıyor" diye yazmak üzereydim ki son anda aradaki 2b'yi de aynı testlerden geçireyim dedim, iyi ki de demişim.
+
+| model | doğru (silmeden) | görünen ingilizce | ingilizceyi silince kaybolan olasılık |
+|---|--:|--:|--:|
+| qwen 0.8b | 15 / 93 | 0.075 | %18 |
+| qwen 2b | 49 / 93 | 0.229 | %24 |
+| qwen 4b | 77 / 93 | 0.386 | %16 |
+
+son sütun ingilizceyi silince doğru cevabın olasılığının yüzde kaçının gittiğini gösteriyor. üç boyutta da aşağı yukarı beşte biri gidiyor. almanca ve ilgisiz kelime kontrolleri üçünde de en fazla %8'de kaldı. almancadan türkçeye çevirirken de benzer sayılar çıktı (%16, %22, %12).[^aralik]
+
+küçük modelde etkiyi görememem bundanmış. 0.8b doğru cevaba zaten çok düşük bir olasılık veriyor, ortalaması 0.07. bunun beşte biri gidince geriye ölçmesi zor bir fark kalıyor. 2b ise tam ölçülebilecek yerde duruyor ve orada doğru cevap sayısı 49'dan 38'e düştü. bütün denemeler içinde en temiz sonuç buydu.[^mcnemar]
+
+model büyüdükçe çeviride daha iyi oluyor ve ara katlardaki ingilizce daha görünür hale geliyor. ingilizceye dayanma oranı ise aşağı yukarı aynı kalıyor. tabii üç boyut ve iki dil çiftiyle "oran hep aynı" demek için hala erken. en azından boyutla birlikte belirgin bir artış ya da azalış görmedim.
+
+## peki neden ingilizce
+
+bir şey hala kafamı kurcalıyordu. almancayı silmek işe yaramamış, ingilizceyi silmek yaramıştı. qwen'in eğitim verisinde de ingilizce almancadan kat kat fazla. belki model kavramı ingilizceye özel bir sebeple yakın tutmuyordu da sadece en çok gördüğü dile yakın tutuyordu. almanca da o kadar sık geçmediği için silinince bir şey olmuyordu.
+
+qwen alibaba'nın modeli ve ingilizcenin yanında bolca çince metinle eğitilmiş. ben de aynı testi bir de kavramın çincesiyle yaptım. "chien" çevrilirken "dog" yerine "狗"u sildim.[^cince]
+
+| model, çift | ingilizceyi silince | çinceyi silince | almanca / fransızca |
+|---|--:|--:|--:|
+| 4b, fr → tr | %16 | %15 | %2 |
+| 4b, de → tr | %12 | %10 | %0 |
+| 2b, fr → tr | %24 | %24 | %8 |
+| 2b, de → tr | %22 | %22 | %-1 |
+
+tablodaki sayılar yine doğru cevabın olasılığının yüzde kaçının gittiğini gösteriyor. çinceyi silmek de ingilizceyi silmek kadar bozdu. dört durumun hiçbirinde ikisi arasındaki fark sıfırdan ayırt edilemedi.
+
+açıkçası bunu beklemiyordum. etki ingilizceye özel değilmiş. qwen kavramı en çok gördüğü iki dilin, ingilizceyle çincenin kelimelerine yakın bir yerde tutuyor ve almancayla fransızca o yere yeterince yakın değil doğal olarak. logit lens'te ingilizcenin bu kadar öne çıkması da büyük ihtimalle qwen'in çıkışının ingilizceye alışkın olmasından. ara katlarda çincenin ne kadar okunduğuna ayrıca bakmadım.
+
+## evlerimizden
+
+son olarak şunu merak ettim: model içeride önce ingilizce bir cümle kurup sonra mı çeviriyor?
+
+türkçe bunu test etmeye çok müsait bir dil. fransızca "de nos maisons" ingilizcede "from our houses" oluyor, türkçede ise tek kelime: "evlerimizden". ingilizce ifade "from" ile başlıyor, türkçe kelime "ev" ile. model ingilizce cümle kurup çeviriyorsa ara katlarda bir yerde "from"a rastlamam gerekirdi. 20 isim ve 3 hal ekiyle 60 ifade hazırladım ve 4b bunların 40'ını tam doğru yazdı.
+
+| kat | "house" | "ev" | "from" |
+|--:|--:|--:|--:|
+| 27 | 0.087 | 0.012 | 0.001 |
+| 28 | **0.150** | 0.022 | 0.000 |
+| 30 | 0.011 | 0.235 | 0.001 |
+| 32 | 0.000 | **0.715** | 0.000 |
+
+"house" ara katlarda var, üstelik türkçe kökten önce ve ondan daha güçlü görünüyor. "from" ise hiçbir katta yok. model kafasında "from our houses" diye bir cümle kurmuyor gibi. cümleyi baştan türkçe kuruyor, sadece "ev"in yerinde bir süre "house" duruyor. bunu sadece okuyarak buldum. o yüzden kesin bir sonuçtansa daha çok güçlü bir ipucu sayıyorum.
+
+## sonuç
+
+türkçe konuşan bir model kafasında ingilizce mi düşünüyor? qwen için cevabım kısmen evet. kavramı ingilizceye ve çinceye yakın bir yerde tutuyor, o yönleri silince de çevirisi bozuluyor. öte yandan ingilizce bir cümle kurduğuna dair bir iz bulamadım, türkçe kelime sırasını kendisi kuruyor. kumru fransızcadan türkçeye çevirirken ingilizceye hiç ihtiyaç duymadı. türkçeden fransızcaya giderken ara katlarda ingilizce görünse de onu silmek çeviriyi bozmadı.
+
+beni en çok şaşırtan çince oldu. ingilizceyi silmek çeviriyi ne kadar bozduysa çinceyi silmek de o kadar bozdu, almancayı ya da fransızcayı silmekse bozmadı. qwen kavramı en çok gördüğü dillerin yakınında tutuyor gibi ve ingilizce de bunlardan sadece biri. logit lens'te en çok onun göze çarpması bu yüzden biraz yanıltıcı.
+
+kodlar ve ham sonuçlar [github'da](https://github.com/FurkanKY/modelin-icini-acmak).
+
+[^yontem]: silme, kelimenin ilk parçasının çıkış vektörünü (çıkış matrisindeki satırı, son normalizasyonun ağırlıklarıyla çarpılmış haliyle) ara katlardaki gizli durumdan izdüşüm olarak çıkarmak demek. 4b'de 16-27. katlarda, 2b ve 0.8b'de aynı oranlı katlarda sildim. "arındırılmış" sürümlerde vektörden önce hedef ve kaynak kelimenin vektörlerini çıkardım. ingilizce vektörün %93-95'i bu ikisinin dışında kalıyor. aralıkları kelimeleri 10.000 kez yeniden örnekleyerek (bootstrap) buldum. 4b'de ingilizce için %95 aralık 0.08 ile 0.15 arası, almanca için 0.01 ile 0.03 arası. tuned lens tercümanlarını 0.8b'de 1500, 2b ve 4b'de 800 adım eğittim.
+
+[^aralik]: kelimeleri yeniden örnekleyerek (bootstrap, 10.000 tekrar) bulduğum %95 güven aralıkları. fransızcadan türkçeye ingilizceyi silmek 0.8b'de %18 [7, 29], 2b'de %24 [17, 31], 4b'de %16 [12, 21]. almancadan türkçeye %16 [2, 28], %22 [16, 28], %12 [7, 17]. ingilizce ile kontrol dili arasındaki fark altı durumun hepsinde sıfırın üstünde, en düşük alt sınır 2 puan (0.8b, almancadan). üç boyutun aralıkları birbiriyle örtüşüyor, yani boyutlar arasında bir fark iddia edemiyorum.
+
+[^cince]: 106 kelimenin hepsinin yaygın çince karşılığını yazdım (书, 水, 狗, 房子 gibi). ilk parçası türkçe hedefle örtüşen çince kelime çıkmadı, 93 kelimenin hepsi teste girdi. silme yöntemi ve katlar ingilizceyle birebir aynı. arındırmadan, çinceyi olduğu gibi silmek daha da fazla bozuyor (4b'de %22 ve %17, 2b'de %35 ve %38). orada türkçeyle örtüşen payı da siliyor olabilirim. 0.8b'de bu testi yapmadım. ingilizce ile çince arasındaki farkın %95 aralıkları: 4b'de [−0.007, +0.033] ve [−0.009, +0.035], 2b'de [−0.020, +0.017] ve [−0.020, +0.016].
+
+[^mcnemar]: mcnemar testinde fransızcadan türkçeye 13 kelime doğrudan yanlışa döndü, 2 kelime yanlıştan doğruya (p 0.007). almancadan türkçeye 10'a 1 (p 0.012). 4b'de aynı test sınırda kaldı (p 0.07 ile 0.09), çünkü 4b çoğu kelimede o kadar emin ki olasılık düşse de en üstteki cevap değişmiyor.

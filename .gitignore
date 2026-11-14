@@ -4,12 +4,13 @@
 blog/STIL.md
 src/charts.py
 _preview.png
+# colab'a yapıştırdığım tek seferlik hücreler ve raporun pdf kopyası
+results/colab_*.py
+results/*.pdf
 __pycache__/
 .ipynb_checkpoints/
 .venv/
 
 # yayımlanmamış yazı taslakları, yayına girince eklenir
-blog/04-*.mdx
 blog/05-*.mdx
-blog/figures/04-*
 blog/figures/05-*
